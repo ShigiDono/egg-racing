@@ -1,0 +1,38 @@
+PTT v 1.0:
+	PIE Texture;
+	contains data about texture;
+
+
+
+Header:
+		"PTT"  		: main part(char*)
+		Diffuse texture : null terminated string(char*)
+		Use colorkey	: indicates using colorkey(BYTE)
+		Colorkey	: colorkey(DWORD)
+		Use bump	: indicates using bump(BYTE)
+		Bump texture 	: null terminated string(char*)
+		Use glow texture: indicates using glow(BYTE)
+		Glow texture 	: null terminated string(char*)
+
+
+PTT v 1.1:
+	PIE Texture;
+	contains data about texture;
+
+
+
+Header:
+		"PTT"  				: main part(char*)
+		Name				: null terminated string(char*)
+		Diffuse texture 		: null terminated string(char*)
+		Use colorkey			: indicates using colorkey(BYTE)
+			Colorkey		: colorkey(DWORD)
+		Use tiles			: indicates using tiles(BYTE)
+			Tile w/h		: width and height of tiles(DWORD,DWORD)
+		Use glow texture		: indicates using glow(BYTE)
+			Same as diffuse 	: indicates that glow map is same as diffuse(BYTE)
+				Glow texture 	: null terminated string(char*)
+				Use colorkey	: indicates using colorkey for glow map(BYTE)
+					Colorkey: colorkey for glowmap(DWORD)
+				Use tiles	: indicates using tiles for glow map(BYTE)
+					Tile w/h: width and height of tiles for glow map(DWORD,DWORD)

@@ -1,0 +1,19 @@
+PTS:
+	PIE Tile Set;
+	contains data about tilesets;
+
+
+
+Header:
+		"PTS"  		: main part(char*)
+		Name  		: null terminated string(char*)
+		count 		: tile count(DWORD)
+		tile size	: width & height of each tile(DWORD)
+Tiles[count]:
+		name		: null terminated string(char*)
+		xtilescount	: width of tileset(w)(DWORD)
+		ytilescount	: height of tileset(h)(DWORD)
+		texturefname	: specifies path to texture(char*)
+		color		: tileset color for editor(DWORD)
+		data[w][h]	: specifies "corner-filling" 0-means that this corner isn't filled
+				  using only first 4 bits(BYTE)

@@ -1,0 +1,47 @@
+-->Help
+Name - this is the preset name, need for engine.
+//Note: use names, which can correctly describe this ps.
+Texture name - name of corresponding texture
+
+Animated - means that texture is using tiles and can be animated
+
+Start frame - this is the first frame of animation
+
+Normal emission - toggle this on if you want to generate particles using normals
+
+Blend kind - use additive blending or not
+
+Particle life - time in milliseconds, which indicates how long any particle will live.
+
+Particle life var - variation
+
+Emitter life - indicates how long does emission last
+
+Start speed - //no comments
+
+End speed - //no comments
+
+Var speed - //no comments, but // - is actually comment)
+
+Dir x - unit vecor x coordinate
+
+Dir y - unit vecor y coordinate
+
+Dir z - unit vecor z coordinate
+
+Start color argb - //no comments
+
+End color argb - //no comments
+
+Var color argb - //no comments
+
+Start size - start size of the particles
+
+End size - you wouldn't believe me if i say thet iit's the end particle's size
+
+Var size - variation
+
+ok - apply changes
+
+cancel - discard changes
+that's all
