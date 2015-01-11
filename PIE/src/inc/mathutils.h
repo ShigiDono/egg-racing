@@ -1,5 +1,6 @@
 #ifndef DREAMCATCHER_MATH_H
 #define DREAMCATCHER_MATH_H
+
 /*
 File    : MathUtils.h
 Author  : Dreamcatcher
@@ -13,9 +14,14 @@ Description:
 
 #pragma warning( disable : 4305 ) 
 #pragma warning( disable : 4244 ) 
+#pragma warning( disable : 4996 ) 
+#define SQR(x) ((x)*(x))
+#define CUBE(x) ((x)*(x)*(x))
 #define PI   3.1415926535897932
 #define OOPI 0.3183098861837906
 #define sincostable_dim 8192 
+#define ABS(A) { A = (A < 0) ? -A : A; }
+#define repeat(A, B) for(A=0;  A<B;  A++)
 typedef float scalar;
 static const scalar deganglem = 1.0f / ( 360.0f / (scalar)sincostable_dim);
 static const scalar radanglem = 1.0f / ( (scalar)PI*2 / (scalar)sincostable_dim);
@@ -35,6 +41,7 @@ __forceinline scalar Min(scalar a, scalar b){return a<=b?a:b;}
 __forceinline scalar Clamp(scalar x , scalar xmin, scalar xmax){return Min(Max(x, xmin), xmax);}
 __forceinline scalar DegToRad(scalar degree){ return (scalar)(degree * PI_d180);}
 __forceinline scalar RadToDeg(scalar radian){ return (scalar)(radian * d180_PI);}
+
 
 class Vector2{
 public:
@@ -88,6 +95,10 @@ public:
 		{return Vector3( x + v.x, y + v.y, z + v.z );}
 	inline Vector3 operator - (const Vector3 &v)const
 		{return Vector3( x - v.x, y - v.y, z - v.z );}
+	inline Vector3 operator + (const scalar s)const
+		{return Vector3( x + s, y + s, z + s );}
+	inline Vector3 operator - (const scalar s)const
+		{return Vector3( x - s, y - s, z - s );}
 	inline Vector3 operator * (const scalar s)const
 		{return Vector3( x * s, y * s, z * s);}
 	inline Vector3 operator / (const scalar s)const
@@ -110,6 +121,49 @@ public:
 		{return Vector3(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x);}
 	inline scalar Length(void) const
 		{return (scalar)sqrt((double)(x*x + y*y + z*z));}
+
+	Vector3& RotateAroundAxis(const Vector3& P, const Vector3& D, float angle)
+	{
+		//rotate around the vector parallel to (u,v,w) that passes through (a,b,c)
+		float axx,axy,axz,ax1;
+		float ayx,ayy,ayz,ay1;
+		float azx,azy,azz,az1;
+
+		float u,v,w;
+		float u2,v2,w2;
+		float a,b,c;
+
+		float sa,ca;
+
+		sa=sin(angle);
+		ca=cos(angle);
+
+		u = D.x;
+		v = D.y;
+		w = D.z;
+		
+		u2 = u*u;
+		v2 = v*v;
+		w2 = w*w;
+
+		a = P.x;
+		b = P.y;
+		c = P.z;
+
+		axx = u2+(v2+w2)*ca;		axy = u*v*(1-ca)-w*sa;	axz = u*w*(1-ca)+v*sa;	ax1 = a*(v2+w2)-u*(b*v+c*w)+(u*(b*v+c*w)-a*(v2+w2))*ca+(b*w-c*v)*sa;
+		ayx = u*v*(1-ca)+w*sa;		ayy = v2+(u2+w2)*ca;	ayz = v*w*(1-ca)-u*sa;	ay1 = b*(u2+w2)-v*(a*u+c*w)+(v*(a*u+c*w)-b*(u2+w2))*ca+(c*u-a*w)*sa;
+		azx = u*w*(1-ca)-v*sa;		azy = v*w*(1-ca)+u*sa;	azz = w2+(u2+v2)*ca;	az1 = c*(u2+v2)-w*(a*u+b*v)+(w*(a*u+b*v)-c*(u2+v2))*ca+(a*v-b*u)*sa;
+
+		Vector3 W;
+		W.x = axx * x + axy * y + axz * z + ax1;
+		W.y = ayx * x + ayy * y + ayz * z + ay1;
+		W.z = azx * x + azy * y + azz * z + az1;
+
+		*this = W;
+
+		return *this;
+	}
+
 
 	scalar Normalise(void) 
 	{
@@ -135,24 +189,6 @@ public:
 		Vector3 F = V2 - V1;// F -= V1;
 		(*this)  = E ^ F;		
 		return (*this).Normalise();
-	}
-	__forceinline void RotateX(scalar angle)
-	{
-		scalar s = sin(angle), c = cos(angle);
-		scalar ty = y*c - z*s, tz = z*c + y*s;
-		z = tz; y = ty;
-	}
-	__forceinline void RotateY(scalar angle)
-	{
-		scalar s = sin(angle), c = cos(angle);
-		scalar tz = z*c - x*s, tx = x*c + z*s;
-		z = tz; x = tx;
-	}
-	__forceinline void RotateZ(scalar angle)
-	{
-		scalar s = sin(angle), c = cos(angle);
-		scalar tx = x*c - y*s, ty = y*c + x*s;
-		x = tx; y = ty;
 	}
 
 	void Rotate(Vector3 angle)
@@ -199,22 +235,53 @@ public:
 		x = temp.x;
 		z = temp.z;
 	}
+// if that vector is normal so this funtion will reutrn euler angle to axes
+
+inline Vector3 GetEulerAnglesFromNormal(Vector3 n)
+{
+    Vector3 xyz_rot;
+//    float d1 = sqrt( n.x*n.x + n.z * n.z );
+//  float cos1 = n.x / d1;
+//   float sin1 = n.z / d1;
+//    xyz_rot.x = 0.0f;
+//    xyz_rot.y = asin( sin1 );
+
+//    float x1 = cos1 * n.x - sin1 * n.z;
+
+  //  float d2 = sqrt ( x1*x1 + n.y*n.y );
+//    float cos2 = n.y / d2;
+//    float sin2 = x1 / d2;
+//    xyz_rot.z = asin( sin2 );
+	xyz_rot.x=-atan2(n.y,n.z)+D3DX_PI/2.0f;
+	xyz_rot.y=atan2(n.x,n.z);//D3DX_PI/6;//atan2(n.z,n.x);
+	xyz_rot.z=-atan2(n.x,n.y);//D3DX_PI/6;//atan2(n.z,n.x);-D3DX_PI/2.0f-
+//	xyz_rot.z=0;//atan2(-n.x,n.y);
+	return xyz_rot;
+
+
+}
+
+inline float AngleBeetweenVectors(Vector3 a, Vector3 b)
+{
+	return acos((a*b)/(a.Length()*b.Length()));
+}
+
 };
 
 
-class Matrix3x3
+class Matrix3
 {
 public:
 	Vector3 m[3];
 	
-	Matrix3x3(void)
+	Matrix3(void)
 	{
 		m[0] = Vector3::Blank();
 		m[1] = Vector3::Blank();
 		m[2] = Vector3::Blank();
 	}
 
-	Matrix3x3(scalar xx, scalar xy, scalar xz,
+	Matrix3(scalar xx, scalar xy, scalar xz,
 			  scalar yx, scalar yy, scalar yz,
 			  scalar zx, scalar zy, scalar zz)
 	{
@@ -225,7 +292,7 @@ public:
 
 	
 	
-	Matrix3x3(Vector3 c0, Vector3 c1, Vector3 c2) //fill the columns
+	Matrix3(Vector3 c0, Vector3 c1, Vector3 c2) //fill the columns
 	{
 		m[0] = c0;
 		m[1] = c1;
@@ -235,28 +302,28 @@ public:
 	inline Vector3 & operator [](int i) 
 	{ return m[i];	} 
 
-	inline Matrix3x3 &operator += ( Matrix3x3 other)
+	inline Matrix3 &operator += ( Matrix3 other)
 	{
 		m[0] += other.m[0];
 		m[1] += other.m[1];
 		m[2] += other.m[2];
 		return (*this);
 	}
-	inline Matrix3x3 &operator -= ( Matrix3x3 other)
+	inline Matrix3 &operator -= ( Matrix3 other)
 	{
 		m[0] -= other.m[0];
 		m[1] -= other.m[1];
 		m[2] -= other.m[2];
 		return (*this);
 	}
-	inline Matrix3x3 &operator *= ( scalar other)
+	inline Matrix3 &operator *= ( scalar other)
 	{
 		m[0] *= other;
 		m[1] *= other;
 		m[2] *= other;
 		return (*this);
 	}
-	inline Matrix3x3 &operator /= ( scalar other)
+	inline Matrix3 &operator /= ( scalar other)
 	{
 		m[0] /= other;
 		m[1] /= other;
@@ -264,19 +331,19 @@ public:
 		return (*this);
 	}
 
-	inline friend Matrix3x3 operator*(const Matrix3x3& m1, const Matrix3x3& m2)
+	inline friend Matrix3 operator*(const Matrix3& m1, const Matrix3& m2)
 	{
-		return Matrix3x3(
+		return Matrix3(
 			m2.m[0]*m1.m[0], m2.m[1]*m1.m[0], m2.m[2]*m1.m[0],
 			m2.m[0]*m1.m[1], m2.m[1]*m1.m[1], m2.m[2]*m1.m[1],
 			m2.m[0]*m1.m[2], m2.m[1]*m1.m[2], m2.m[2]*m1.m[2]);
 	}
-	inline Matrix3x3 operator+(Matrix3x3 m)
+	inline Matrix3 operator+(Matrix3 m)
 	{
 		return (*this) += m;
 	}
 
-	inline friend Vector3 operator *(const Vector3& V, const Matrix3x3& M)
+	inline friend Vector3 operator *(const Vector3& V, const Matrix3& M)
 	{
 		Vector3 t;
 		t.x = M.m[0]*V;
@@ -285,7 +352,7 @@ public:
 		return t;
 	}
 
-	inline friend Vector3 operator *(const Matrix3x3& M, const Vector3& V)
+	inline friend Vector3 operator *(const Matrix3& M, const Vector3& V)
 	{
 		Vector3 t;
 		t.x = M.m[0]*V;
@@ -294,14 +361,14 @@ public:
 		return t;
 	}
 
-	inline Matrix3x3 operator-(Matrix3x3 m)
+	inline Matrix3 operator-(Matrix3 m)
 	{
 		return (*this) -= m;
 	}
 
-	Matrix3x3 Transpose() const 
+	Matrix3 Transpose() const 
 	{
-		return Matrix3x3(m[0].x, m[1].x, m[2].x,
+		return Matrix3(m[0].x, m[1].x, m[2].x,
 						 m[0].y, m[1].y, m[2].y,
 						 m[0].z, m[1].z, m[2].z);
 	}
@@ -311,17 +378,17 @@ public:
 			return (m[r1][c1] * m[r2][c2] - m[r1][c2] * m[r2][c1]);
 		}
 
-	inline Matrix3x3 inverse() 
+	inline Matrix3 inverse() 
 	{
 		Vector3 co = Vector3(cofac(1, 1, 2, 2), cofac(1, 2, 2, 0), cofac(1, 0, 2, 1));
 		scalar det = m[0]*co;
 		//btFullAssert(det != btScalar(0.0));
 		scalar s = 1.0f / det;
-		return Matrix3x3(co.x * s, cofac(0, 2, 2, 1) * s, cofac(0, 1, 1, 2) * s,
+		return Matrix3(co.x * s, cofac(0, 2, 2, 1) * s, cofac(0, 1, 1, 2) * s,
 						 co.y * s, cofac(0, 0, 2, 2) * s, cofac(0, 2, 1, 0) * s,
 						 co.z * s, cofac(0, 1, 2, 0) * s, cofac(0, 0, 1, 1) * s);
 
-		return Matrix3x3(co.x * s, co.y * s, co.z * s,
+		return Matrix3(co.x * s, co.y * s, co.z * s,
 						 cofac(0, 2, 2, 1) * s, cofac(0, 0, 2, 2) * s, cofac(0, 1, 2, 0) * s,
 						 cofac(0, 1, 1, 2) * s, cofac(0, 2, 1, 0) * s, cofac(0, 0, 1, 1) * s);
 
@@ -377,7 +444,7 @@ class Quaternion
 		
 	  inline void AxisAngle(Vector3& axis, scalar& angle)const {
         scalar vl = (scalar)sqrt( x*x + y*y + z*z );
-        if( vl > 0.0001 )
+        if( vl > 0.0001f )
         {
             scalar ivl = 1.0f/vl;
             axis = Vector3( x*ivl, y*ivl, z*ivl );
@@ -417,7 +484,7 @@ class Quaternion
             z *= length;
 		}
 
-	    inline void toMatrix3x3( Matrix3x3& m  )const
+	    inline void toMatrix3( Matrix3& m  )const
 		{
 			scalar wx, wy, wz, xx, yy, yz, xy, xz, zz, x2, y2, z2;
 			scalar s  = 2.0f/(*this).Norm();  
@@ -446,6 +513,21 @@ typedef Quaternion Vector4;
 
 bool SqareEq( scalar a, scalar b, scalar c, scalar &t0, scalar &t1);
 
+__forceinline void Swap(scalar &a, scalar &b)
+{
+	scalar t = a;
+	a = b;
+	b = a;
+}
+
+__forceinline void Swapv(Vector3 &a, Vector3 &b)
+{
+	Vector3 t = a;
+	a = b;
+	b = a;
+}
+
+
 __forceinline Vector3 CalcNorm(const Vector3 v1,const Vector3 v2,const Vector3 v3)
 {
    Vector3 t = (v3-v2)^(v2-v1);
@@ -453,7 +535,7 @@ __forceinline Vector3 CalcNorm(const Vector3 v1,const Vector3 v2,const Vector3 v
    return t;
 }
 
-__forceinline void Clampv(Vector3& x, const Vector3 xmin, Vector3 xmax)
+__forceinline void Clampv(Vector3& x, const Vector3 xmin, const Vector3 xmax)
 {
 	x.x = Clamp(x.x, xmin.x, xmax.x);
 	x.y = Clamp(x.y, xmin.y, xmax.y);
@@ -463,13 +545,16 @@ __forceinline void Clampv(Vector3& x, const Vector3 xmin, Vector3 xmax)
 
 
 void CalcCameraVertices(scalar fovy, scalar aspect, scalar znear, scalar zfar,
-						Vector3 cpos, Vector3 cat,Vector3 cup, Vector3 *v);
-int PointsPlaneSide(Vector3 a, Vector3 n,Vector3 offset,Matrix3x3 R, Vector3 *points, int pnum);
-scalar FindMTD(Vector3 a, Vector3 n,Vector3 offset,Matrix3x3 R, Vector3 *points, int pnum);
-bool CullBox(Vector3 _min, Vector3 _max,Vector3 pos, Vector3 scaling, Matrix3x3 R,
-						scalar fovy, scalar aspect, scalar znear, scalar zfar,
-						Vector3 cpos, Vector3 cat, Vector3 cup);
-
+						Vector3 cpos, Vector3 cat,Vector3 cup, Vector3 v[8]);
+int PointsPlaneSide(Vector3 a, Vector3 n,Vector3 offset,Matrix3 R, Vector3 *points, int pnum);
+int PointPlanesSide(Vector3 *a, Vector3 *n,int *iV, Vector3 offset, Matrix3 R, Vector3 point, int fnum, Vector3 &normal, float &depth);
+int PointPlanesSideEx(Vector3 *a, Vector3 *n,WORD *iV, Vector3 offset, Matrix3 R, Vector3 point,int  fnum, Vector3 &normal, float &depth, Vector3 scaling);
+scalar FindMTD(Vector3 a, Vector3 n,Vector3 offset,Matrix3 R, Vector3 *points, int pnum);
+ bool CullBox(Vector3 _min, Vector3 _max,Vector3 pos, Vector3 scaling, Matrix3 R,
+                        scalar fovy, scalar aspect, scalar znear, scalar zfar,
+                        Vector3 cpos, Vector3 cat, Vector3 cup);
+ int inclusion (Vector3 *p, int *iV,  int nVert,  int nFaces,  Vector3 q);
+ void M3MtoD3DM(D3DXMATRIX *m,Matrix3 res);
 #define Key_Backspace  8
 #define Key_Tab  9
 #define Key_Enter  13
