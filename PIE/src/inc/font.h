@@ -5,7 +5,7 @@
 #include"t_and_s.h"
 #include"grtypes.h"
 #define LetterSpace (float)18/270
-void FAssign(LPDIRECT3DDEVICE9 _d3dd,DWORD w,DWORD h);
+//void FAssign(LPDIRECT3DDEVICE9 _d3dd,DWORD w,DWORD h);
 class CFont
 {
 public:

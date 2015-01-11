@@ -1,13 +1,14 @@
 #include"stdafx.h"
 #include"t_and_s.h"
-LPDIRECT3DDEVICE9 td3dd=NULL;
+//LPDIRECT3DDEVICE9 td3dd=NULL;
 char _tszAppPath[MAX_PATH];
 int cnt=0;
-LPDIRECT3DTEXTURE9 Null_texture=NULL;
+//LPDIRECT3DTEXTURE9 Null_texture=NULL;
 __forceinline DWORD D3DColor(DWORD c24)
 {
-	return D3DCOLOR_XRGB(GetRValue(c24),GetGValue(c24),GetBValue(c24));
+	return 0;//D3DCOLOR_XRGB(GetRValue(c24),GetGValue(c24),GetBValue(c24));
 }
+#if 0
 void THAssignDevice(LPDIRECT3DDEVICE9 _d3dd,char *CDir)
 {
 	td3dd=_d3dd;
@@ -22,15 +23,19 @@ LPDIRECT3DDEVICE9	__GetDevice()
 {
 	return td3dd;
 }
+#endif
 CTexture::CTexture()
 {
 	ZeroMemory(this,sizeof(CTexture));
-	Pool=D3DPOOL_MANAGED;
+	//Pool=D3DPOOL_MANAGED;
 }
+#if 0
+
 void CTexture::SetStage(D3DTEXTURESTAGESTATETYPE type,DWORD Value)
 {
 	td3dd->SetTextureStageState(0,type,Value);
 }
+#endif
 DWORD Blend(DWORD Color1,DWORD Color2)//Color1 - is the upper
 {
 	float Val=(float)GetAValue(Color1)/255;
@@ -38,8 +43,13 @@ DWORD Blend(DWORD Color1,DWORD Color2)//Color1 - is the upper
 	short int r=GetRValue(Color1)*Val+GetRValue(Color2)*(1-Val);
 	short int g=GetGValue(Color1)*Val+GetGValue(Color2)*(1-Val);
 	short int b=GetBValue(Color1)*Val+GetBValue(Color2)*(1-Val);
+#if 0
 	return D3DCOLOR_ARGB(a,b,g,r);
+#endif
+    return 0;
 }
+#if 0
+
 bool CopyBytes(LPDIRECT3DTEXTURE9 _txt,BYTE* data,DWORD texturew,DWORD textureh,DWORD tilew,DWORD tileh,DWORD tnum)
 {
 	D3DLOCKED_RECT lr;
@@ -84,6 +94,7 @@ bool CopyBytes(LPDIRECT3DTEXTURE9 _txt,BYTE* data,DWORD texturew,DWORD textureh,
 	_txt->UnlockRect(0);
 	return 1;
 }
+
 bool _CopyBytes(LPDIRECT3DTEXTURE9 _txt,BYTE* data,DWORD texturew,DWORD textureh,DWORD tilew,DWORD tileh,DWORD tnum)
 {
 	D3DLOCKED_RECT lr;
@@ -128,6 +139,7 @@ bool _CopyBytes(LPDIRECT3DTEXTURE9 _txt,BYTE* data,DWORD texturew,DWORD textureh
 	_txt->UnlockRect(0);
 	return 1;
 }
+#endif
 char *GetDir()
 {
 	return _tszAppPath;
@@ -138,7 +150,10 @@ DWORD BlendC(DWORD Color1,DWORD Color2,float Val)
 	short int r=GetRValue(Color1)*Val+GetRValue(Color2)*(1-Val);
 	short int g=GetGValue(Color1)*Val+GetGValue(Color2)*(1-Val);
 	short int b=GetBValue(Color1)*Val+GetBValue(Color2)*(1-Val);
+#if 0
 	return D3DCOLOR_ARGB(a,b,g,r);
+#endif
+    return 0;
 }
 bool CTexture::LoadFromFile(LPCSTR Fname)
 {
@@ -207,6 +222,7 @@ bool CTexture::LoadFromFile(LPCSTR Fname)
 				f->Read(&tw,4);
 				f->Read(&th,4);
 			}
+#if 0
 			RELEASE(_ttext);
 			_ttext=NULL;
 			D3DXIMAGE_INFO Info;
@@ -271,6 +287,7 @@ bool CTexture::LoadFromFile(LPCSTR Fname)
 			{
 				d3ddt=&_ttext;
 			}
+#endif
 /*HRESULT D3DXCreateTextureFromFileEx(
   LPDIRECT3DDEVICE9 pDevice,
   LPCTSTR pSrcFile,
@@ -296,13 +313,17 @@ bool CTexture::LoadFromFile(LPCSTR Fname)
 }
 void CTexture::SetNullTexture()
 {
+#if 0
 	td3dd->SetTexture(0,NULL);
+#endif
 }
 void CTexture::Release()
 {
 	for (DWORD i=0;i<dtNum;i++)
 	{
+#if 0
 		RELEASE(d3ddt[i]);
+#endif
 	}
 }
 bool CTexture::Reset()
@@ -313,6 +334,7 @@ bool CTexture::Reset()
 void CTexture::SetTexture(DWORD num)
 {
 //	td3dd->SetTexture(0,d3dt);
+#if 0
 	if (d3ddt!=NULL){
 		if (num==0&&dtNum==1)
 			td3dd->SetTexture(0,*d3ddt);
@@ -321,6 +343,7 @@ void CTexture::SetTexture(DWORD num)
 	}
 	else
 		td3dd->SetTexture(0,NULL);
+#endif
 	return;
 }
 CSurface::CSurface()

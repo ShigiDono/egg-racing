@@ -46,7 +46,7 @@ public:
 	WORD						Width,Height;
 	float						HScale,VScale;
 	DWORD						dr,undr;
-	LPDIRECT3DTEXTURE9			Texture;
+	//LPDIRECT3DTEXTURE9			Texture;
 	Tu							prg;
 	int							xxx,zzz,iii,TWidth,THeight,TCount,TS,TDef,TDef1;
 	Vector3						LightVector;
@@ -60,7 +60,7 @@ public:
 		DELETE(HMap);
 		DELETE(ColorMap);
 		DELETE(TempT);
-		RELEASE(Texture);
+		//RELEASE(Texture);
 	}
 };
 typedef	CHeightMap *PHeightMap;
@@ -71,10 +71,10 @@ public:
     void						Draw();
 	void						Create(TeVertex *v);
 	Vector3						Mi,Ma;
-	LPDIRECT3DVERTEXBUFFER9		buff;
+	//LPDIRECT3DVERTEXBUFFER9		buff;
 	int							xt,yt;
 	PHeightMap					HMap;
-	void						Release(){RELEASE(buff);}
+	void						Release(){/*RELEASE(buff);*/}
 	void						Reset(){Create(NULL);}
 	DWORD						Cl,ICl;
 };

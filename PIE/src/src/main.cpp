@@ -16,7 +16,7 @@ bool la=0;
 float fade=1.0f;
 #define MouseSen 1.0f
 
-D3DCOLORVALUE d3dcolorvalue(BYTE a,BYTE r,BYTE g,BYTE b)
+/*D3DCOLORVALUE d3dcolorvalue(BYTE a,BYTE r,BYTE g,BYTE b)
 {
 	D3DCOLORVALUE res;
 	res.a=(float)a/255;
@@ -24,8 +24,8 @@ D3DCOLORVALUE d3dcolorvalue(BYTE a,BYTE r,BYTE g,BYTE b)
 	res.g=(float)g/255;
 	res.b=(float)b/255;
 	return res;
-}
-const D3DCOLORVALUE clBlack=d3dcolorvalue(255,0,0,0),clWhite=d3dcolorvalue(255,255,255,255);
+}*/
+//const D3DCOLORVALUE clBlack=d3dcolorvalue(255,0,0,0),clWhite=d3dcolorvalue(255,255,255,255);
 FLOAT dtt;
 
 void Scene1Step(DWORD Scene,FLOAT dt)
@@ -156,6 +156,7 @@ void DrawCamera(PCamera c)
 void	DrawFade(float progress)
 
 {
+#if 0
 ///	if (!pd->PrepareScene()) return;
 	__GetDevice()->SetTexture(0,NULL);
 	__GetDevice()->SetRenderState(D3DRS_FOGENABLE,0);
@@ -167,10 +168,12 @@ void	DrawFade(float progress)
 	fr->Update();
 	fr->Draw();
 	__GetDevice()->SetRenderState(D3DRS_FOGENABLE,1);
+#endif
 }
 void	DrawLoading(float progress,char *text)
 
 {
+#if 0
 	if (!pd->PrepareScene()) return;
 //background
 	pd->SetState(PIE_TFILTERING,1);
@@ -196,9 +199,11 @@ void	DrawLoading(float progress,char *text)
 	else 
 		DrawFade(_fade);
 	pd->PresentScene();
+#endif
 }
 void Scene1Draw(DWORD Scene)
 {
+#if 0
 //	DrawLoading(0,"wdwd");
 //	WriteMsg("-->Begin Drawing");
 	PScene cs=(PScene)Scene;
@@ -259,6 +264,7 @@ void Scene1Draw(DWORD Scene)
 	if (efade>=2.0f) 		pd->Exit();
 	//*/
 	_T=ct;
+#endif
 }
 bool MyRelease()
 {
@@ -268,6 +274,7 @@ bool MyRelease()
 }
 bool MyInit()
 {
+#if 0
 	DWORD tt=timeGetTime();
 	while (timeGetTime()-tt<100);
 	rr=new CPRect;
@@ -384,6 +391,7 @@ bool MyInit()
 	pd->SetBGColor(_map.BGcolor);
 	pd->SetState(PIE_FOGCOLOR,_map.BGcolor);
 	return 1;
+#endif
 }
 DWORD cct,llt;
 	char res[256];
@@ -396,10 +404,7 @@ bool MyStep()
 	tc=pd->GetTime();
 	return 1;
 }
-int WINAPI WinMain(HINSTANCE hinstance,
-				   HINSTANCE hprevinstance,
-				   LPSTR LpCmdLine,
-				   int nCmdShow)
+int main(int argc, char *argv[])
 {
 	bool b;
 	pd=new CPie();
@@ -409,6 +414,6 @@ int WINAPI WinMain(HINSTANCE hinstance,
 	pd->SetState(PIE_EXIT_FUNC,(DWORD)MyRelease);
 /*	if (!pd->Init(hinstance))
 		return 0;*/
-	int res=pd->Run(hinstance);
+	int res=pd->Run();
 	return res;
 }

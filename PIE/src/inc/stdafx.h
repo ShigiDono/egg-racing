@@ -24,9 +24,11 @@
 #include <tchar.h>
 #include <math.h>
 #include<iostream>
-#include<d3d9.h>
-#include<d3dx9.h>
-#include<d3dx9core.h>
+#include <SDL.h>
+#include <SDL_opengles2.h>
+//#include<d3d9.h>
+//#include<d3dx9.h>
+//#include<d3dx9core.h>
 #include<dinput.h>
 #include<mmsystem.h>
 #include<iostream>

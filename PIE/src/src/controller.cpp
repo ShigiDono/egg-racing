@@ -1,4 +1,4 @@
-#include"stdafx.h"
+#include "stdafx.h"
 #include"controller.h"
 /*CController<class _Class>::CController()
 {

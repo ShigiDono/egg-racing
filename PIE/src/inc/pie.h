@@ -60,7 +60,7 @@ class CPie
 {
 public:
 	CPie();
-	bool					Init(HINSTANCE hinst);
+	bool					Init();
 // Dinput
 	// main funcs
 	HRESULT					InitDirectInput();
@@ -84,7 +84,7 @@ public:
 	bool					InitD3D();
 	bool					ReInitD3D();
 	bool					ResetD3D();
-	int						Run(HINSTANCE hinstance);
+	int						Run();
 	void					Render();
 	bool					Step();
 	bool					UserInit();
@@ -116,7 +116,7 @@ public:
 	DWORD					GetTime();
 	WORD					GetScreenWidth(){return ScrWidth;}
 	WORD					GetScreenHeight(){return ScrHeight;}
-	void					AddPointLight(D3DCOLORVALUE Diffuse,D3DCOLORVALUE Ambient
+	/*void					AddPointLight(D3DCOLORVALUE Diffuse,D3DCOLORVALUE Ambient
 									,D3DCOLORVALUE Specular,Vector3 Position,float Range,
 									float Attenuation0,float Attenuation1,float Attenuation2,bool Enabled);
 	void					AddSpotLight(D3DCOLORVALUE Diffuse,D3DCOLORVALUE Ambient
@@ -128,7 +128,8 @@ public:
 	void					AddLight(D3DLIGHTTYPE Type,D3DCOLORVALUE Diffuse,D3DCOLORVALUE Ambient,D3DCOLORVALUE Specular,
 									D3DVECTOR Direction,D3DVECTOR Position,float Falloff,float Phi,float Range,
 									float Theta,float Attenuation0,float Attenuation1,float Attenuation2,bool Enabled);
-	D3DLIGHT9				*GetLight(WORD index){return &Lights[index];}
+                                    */
+	//D3DLIGHT9				*GetLight(WORD index){return &Lights[index];}
 	void					DeleteLight(WORD index);
 	void					EnableLight(WORD index,bool Enabled);
 	void					SetLightPos(WORD index,Vector3 pos);
@@ -139,11 +140,11 @@ public:
 	char					*GetAppPath(){return szAppPath;}
 	void					WindowToggleFullScreen(bool isFullScreen);
 	void					ToggleFullScreen(bool isFullScreen);
-	bool					IsFullScreen(){return !d3dp.Windowed;}
+    bool					IsFullScreen(){return false;}//!d3dp.Windowed;}
 	CSceneManager			SManager;
 	bool					glowEnable(){return GlowEnable;}
 	void					SetGlow(bool b){GlowEnable=b;}
-	LPDIRECT3DDEVICE9		GetDevice(){return d3dd;}
+	//LPDIRECT3DDEVICE9		GetDevice(){return d3dd;}
 	bool					PrepareScene();
 	void					PresentScene();
 	char					Map[MAX_PATH];
@@ -158,13 +159,13 @@ protected:
 	int						ScScount;
 	PCamera					Camera;
 	float					Fps;
-	D3DLIGHT9				Lights[16];
+	//D3DLIGHT9				Lights[16];
 	WORD					LightCount;
 	WORD					ScrWidth;
 	HINSTANCE				hInst;
 	WORD					ScrHeight;
 	DWORD					ScrRRate;
-	D3DFORMAT				ScrFormat;
+	//D3DFORMAT				ScrFormat;
 	bool					GlowEnable;
 	HWND					hWnd;
 	D3DCOLOR				BGround;
@@ -194,10 +195,10 @@ protected:
 private:
 	bool					_exit;
 	PSurface				BackBuffer;
-	LPDIRECT3D9				pd3d;
+/*	LPDIRECT3D9				pd3d;
 	LPDIRECT3DDEVICE9		d3dd;
 	D3DPRESENT_PARAMETERS	d3dp;
-	D3DDISPLAYMODE			dModeList[40];
+	D3DDISPLAYMODE			dModeList[40];*/
 	BYTE					ModeCount;
 
 	// dinput

@@ -262,6 +262,7 @@ void				CHeightMap::LoadHeightMap(PFile f)
 	}
 	prog=0.42f;
 	(prg)(prog,"6");
+#if 0
 	D3DLOCKED_RECT rect;
 	LPDIRECT3DTEXTURE9			txt;
 	D3DXCreateTexture(__GetDevice(),this->TS*this->TWidth,this->TS*this->THeight,D3DX_DEFAULT, 0, D3DFMT_A8R8G8B8, D3DPOOL_MANAGED, &txt);
@@ -367,6 +368,7 @@ void				CHeightMap::LoadHeightMap(PFile f)
 	DELETE(TText);
 	DELETE(_txt);
 	DELETE(dat);
+#endif
 }
 void				CHeightMap::GenerateNormals()
 {
@@ -485,12 +487,14 @@ void CPMap::Render()
 //		RM.Models[i]->DrawBMesh(0xffff0000);
 	}
 	ModelsTime = timeGetTime() - ModelsTime;
+#ifdef 0
 	__GetDevice()->SetRenderState(D3DRS_FOGENABLE,false);
 	for (int i=0;i<RM.ModelsCount;i++)
 	{
 		RM.Models[i]->DrawPS();
 	}
 	__GetDevice()->SetRenderState(D3DRS_FOGENABLE,true);
+#endif
 }
 Vector3 GetEulerAnglesFromNormal(Vector3 n)
 {
@@ -507,7 +511,9 @@ Vector3 GetEulerAnglesFromNormal(Vector3 n)
 //    float cos2 = n.y / d2;
 //    float sin2 = x1 / d2;
 //    xyz_rot.z = asin( sin2 );
+#ifdef 0
 	xyz_rot.x=-atan2(n.y,n.z)+D3DX_PI/2.0f;
+#endif
 	xyz_rot.y=atan2(n.x,n.z);//D3DX_PI/6;//atan2(n.z,n.x);
 	xyz_rot.z=-atan2(n.x,n.y);//D3DX_PI/6;//atan2(n.z,n.x);-D3DX_PI/2.0f-
 //	xyz_rot.z=0;//atan2(-n.x,n.y);
@@ -559,7 +565,9 @@ bool CPMap::LoadFromFile(LPCSTR Fname)
 	f->Read(&this->Terrain->HMap->VScale,4);
 	DWORD cc;
 	f->Read(&cc,4);
+#ifdef 0
 	this->BGcolor=D3DCOLOR_XRGB(GetRValue(cc),GetGValue(cc),GetBValue(cc));
+#endif
 	f->Read(&this->fnear,4);
 	f->Read(&this->ffar,4);
 	this->Terrain->HMap->Width=this->Width;

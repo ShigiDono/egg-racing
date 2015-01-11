@@ -13,7 +13,7 @@ DWORD _fnum,_vnum,rr,_pos1;
 WORD nv;
 WORD nf,tfpos,len;
 DWORD voffsets[256],foffsets[256];
-D3DMATERIAL9 _mat[256];
+//D3DMATERIAL9 _mat[256];
 char tfnames[2048];	
 bool skipmat=0;
 bool INv=0;
@@ -111,7 +111,7 @@ bool PIEWriteIni(char* section,char* key,char* path,char* str)
            path);
 }
 //<--Functions-->
-D3DCOLORVALUE PIEMakeColor(BYTE a,BYTE r,BYTE g,BYTE b)
+/*D3DCOLORVALUE PIEMakeColor(BYTE a,BYTE r,BYTE g,BYTE b)
 {
 	D3DCOLORVALUE res;
 	res.a=(float)a/255;
@@ -119,8 +119,8 @@ D3DCOLORVALUE PIEMakeColor(BYTE a,BYTE r,BYTE g,BYTE b)
 	res.g=(float)g/255;
 	res.r=(float)r/255;
 	return res;
-}
-D3DMATERIAL9 PIEMakeMaterial(D3DCOLORVALUE a,D3DCOLORVALUE d,D3DCOLORVALUE s,D3DCOLORVALUE e,FLOAT p)
+}*/
+/*D3DMATERIAL9 PIEMakeMaterial(D3DCOLORVALUE a,D3DCOLORVALUE d,D3DCOLORVALUE s,D3DCOLORVALUE e,FLOAT p)
 {
 	D3DMATERIAL9 res;
 	res.Ambient=a;
@@ -178,10 +178,10 @@ D3DMATERIAL9 PIEReadMaterial(HANDLE file)
 	PIEReadFile(file,&b,1,&rr,NULL);
 	m.Emissive=PIEMakeColor(a,r,g,b);
 	PIEReadFile(file,&m.Power,4,&rr,NULL);*/
-	return m;
+	//return m;
 //	ecvt
-}
-LPDIRECT3D9 PIECreate3D()
+//}
+/*LPDIRECT3D9 PIECreate3D()
 {
 	return Direct3DCreate9(D3D_SDK_VERSION);
 }
@@ -192,8 +192,8 @@ BOOL PIEInitDirect3D(HWND hwnd,LPDIRECT3D9 pd3d,LPDIRECT3DDEVICE9 *d3dd,D3DPRESE
                                       &d3dp, d3dd ) ) )
 									  return 0;
 	return 1;
-}
-void PIESetParams(D3DPRESENT_PARAMETERS *d3dp,HWND hwnd,D3DFORMAT BackBufferFormat,int Width,int Height,int RefreshRate,bool Windowed,
+}*/
+/*void PIESetParams(D3DPRESENT_PARAMETERS *d3dp,HWND hwnd,D3DFORMAT BackBufferFormat,int Width,int Height,int RefreshRate,bool Windowed,
 	short int BackBufferCount,D3DMULTISAMPLE_TYPE MultiSampleType,DWORD MultiSamleQuality)
 {
 	ZeroMemory(d3dp,sizeof(D3DPRESENT_PARAMETERS));
@@ -216,9 +216,9 @@ void PIESetParams(D3DPRESENT_PARAMETERS *d3dp,HWND hwnd,D3DFORMAT BackBufferForm
 	d3dp->MultiSampleQuality			= MultiSamleQuality;
 	d3dp->Flags							= 2;
 	d3dp->FullScreen_RefreshRateInHz	= D3DPRESENT_RATE_DEFAULT;
-}
+}*/
 //<--Matrices-->
-void PIETransform(LPDIRECT3DDEVICE9 d3dd,D3DTRANSFORMSTATETYPE t,D3DXMATRIX *Matrix)
+/*void PIETransform(LPDIRECT3DDEVICE9 d3dd,D3DTRANSFORMSTATETYPE t,D3DXMATRIX *Matrix)
 {
 	d3dd->SetTransform(t,Matrix);
 }
@@ -280,7 +280,7 @@ bool PIERegisterWNDClass(HINSTANCE hinst,UINT style,WNDPROC WndProc,char* ClassN
 		return 0;
 	}
 	return 1;
-}
+}*/
 //And now.....<--Models-->!!!!
 bool ReadHeader(HANDLE file,Header* h)
 {
@@ -322,7 +322,7 @@ bool ReadHeader(HANDLE file,Header* h)
 	{
 		if (!PIEReadFile(file,&h->vnum[i]		,4,&r,NULL)) return 0;
 		if (!PIEReadFile(file,&h->fnum[i]		,4,&r,NULL)) return 0;
-		h->mat[i]=PIEReadMaterial(file);
+		//h->mat[i]=PIEReadMaterial(file);
 		h->totalfnum+=h->fnum[i];
 		h->totalvnum+=h->vnum[i];
 //		if (!PIEReadFile(file,&h->offset[i]		,4,&r,NULL)) return 0;
@@ -349,7 +349,7 @@ float cang(Vector3 v0,Vector3 v1)
 {
 	return RadToDeg(acos(v0*v1));
 }
-inline FLOAT Abs(FLOAT x)
+inline GLfloat Abs(GLfloat x)
 {
 	if (x<0)
 		return -x;
@@ -772,10 +772,10 @@ DWORD ReadChunk(HANDLE file)
 		if (mc==0)
 			skipmat=false;
 		if (!skipmat){
-			_mat[mc].Emissive.a=0;
+			/*_mat[mc].Emissive.a=0;
 			_mat[mc].Emissive.r=0;
 			_mat[mc].Emissive.g=0;
-			_mat[mc].Emissive.b=0;
+			_mat[mc].Emissive.b=0;*/
 			mc++;
 			while (buff!=0||h.Length>i)
 			{
@@ -803,8 +803,9 @@ DWORD ReadChunk(HANDLE file)
 		PIEReadFile(file,&r,1,&rr,NULL);
 		PIEReadFile(file,&g,1,&rr,NULL);
 		PIEReadFile(file,&b,1,&rr,NULL);
-		if (!skipmat)
-			_mat[mc-1].Ambient=PIEMakeColor(255,r,g,b);
+		if (!skipmat) {
+			//_mat[mc-1].Ambient=PIEMakeColor(255,r,g,b);
+        }
 		_pos1+=h.Length-6;
 		ReadChunk(file);
 		return 0;
@@ -817,8 +818,9 @@ DWORD ReadChunk(HANDLE file)
 		PIEReadFile(file,&r,1,&rr,NULL);
 		PIEReadFile(file,&g,1,&rr,NULL);
 		PIEReadFile(file,&b,1,&rr,NULL);
-		if (!skipmat)
-		_mat[mc-1].Diffuse=PIEMakeColor(255,r,g,b);
+		if (!skipmat) {
+		    //_mat[mc-1].Diffuse=PIEMakeColor(255,r,g,b);
+        }
 		_pos1+=h.Length-6;
 		ReadChunk(file);
 		return 0;
@@ -831,8 +833,9 @@ DWORD ReadChunk(HANDLE file)
 		PIEReadFile(file,&r,1,&rr,NULL);
 		PIEReadFile(file,&g,1,&rr,NULL);
 		PIEReadFile(file,&b,1,&rr,NULL);
-		if (!skipmat)
-		_mat[mc-1].Specular=PIEMakeColor(255,r,g,b);
+		if (!skipmat) {
+		    //_mat[mc-1].Specular=PIEMakeColor(255,r,g,b);
+        }
 		_pos1+=h.Length-6;
 		ReadChunk(file);
 		return 0;
@@ -843,8 +846,9 @@ DWORD ReadChunk(HANDLE file)
 		ChunkHeader a;
 		ReadChunkHeader(file,&a);
 		PIEReadFile(file,&buff,2,&rr,NULL);
-		if (!skipmat)
-		_mat[mc-1].Power=buff;
+		if (!skipmat) {
+		    //_mat[mc-1].Power=buff;
+        }
 		_pos1+=h.Length-6;
 		ReadChunk(file);
 		return 0;
@@ -855,8 +859,9 @@ DWORD ReadChunk(HANDLE file)
 		ChunkHeader a;
 		ReadChunkHeader(file,&a);
 		PIEReadFile(file,&buff,2,&rr,NULL);
-		if (!skipmat)
-		_mat[mc-1].Diffuse.a=(float)(100-buff)/100;
+		if (!skipmat) {
+		    //_mat[mc-1].Diffuse.a=(float)(100-buff)/100;
+        }
 		_pos1+=h.Length-6;
 		ReadChunk(file);
 		return 0;
@@ -921,7 +926,7 @@ void GetBBox(LPCSTR fname,float *mx,float *my,float *mz,float *_mx,float *_my,fl
 }
 
 
-BOOL PIELoadModel (LPCSTR fname,DWORD ModelKind,
+/*BOOL PIELoadModel (LPCSTR fname,DWORD ModelKind,
 											   DWORD *vnum,DWORD *fnum,D3DMATERIAL9 *mat,
 											   WORD **IndexData,LPVOID VertexData,
 											   Vector3 *Min,Vector3 *Max,
@@ -1041,10 +1046,10 @@ BOOL PIELoadModel (LPCSTR fname,DWORD ModelKind,
 			else
 				res=Vector3(1.0f,0.0f,0.0f);
 			va[i].n=res;
-		}*/
+		}* /
 //		Delete(fn);
-/*		memcpy(VertexData,va,_vnum*sizeof(TVertex3D));
-		memcpy(IndexData,ic,_fnum*12);*/
+//		memcpy(VertexData,va,_vnum*sizeof(TVertex3D));
+//		memcpy(IndexData,ic,_fnum*12);
 		*IndexData=ic;
 		memcpy(VertexData,&va,8);
 //		VertexData=va;
@@ -1059,8 +1064,8 @@ BOOL PIELoadModel (LPCSTR fname,DWORD ModelKind,
 	}
 //	memcpy(offset,head.offset,4*head.mn);
 	return PIECloseFile(modf);
-}
-LPDIRECT3DINDEXBUFFER9 PIECreateIndexBuffer(LPDIRECT3DDEVICE9 d3dd,WORD *indices,DWORD fnum,LPDIRECT3DINDEXBUFFER9 ind)
+}*/
+/*LPDIRECT3DINDEXBUFFER9 PIECreateIndexBuffer(LPDIRECT3DDEVICE9 d3dd,WORD *indices,DWORD fnum,LPDIRECT3DINDEXBUFFER9 ind)
 {
 	LPDIRECT3DINDEXBUFFER9 _ind=NULL;
 	if (ind) {ind->Release();}
@@ -1087,7 +1092,7 @@ void D3DMtoM3M(D3DXMATRIX m,Matrix3x3 *res)
 {
 	*res=Matrix3x3(Vector3(m(0,0),m(1,0),m(2,0)),Vector3(m(0,1),m(1,1),m(2,1)),Vector3(m(0,2),m(1,2),m(2,2)));
 //	*res=Matrix3x3(Vector3(m(0,0),m(0,1),m(0,2)),Vector3(m(1,0),m(1,1),m(1,2)),Vector3(m(2,0),m(2,1),m(2,2)));
-}
+}*/
 /*BOOL PIEGetModelData (HANDLE modf,BYTE ModelKind,BYTE ModelNumber,
 											   DWORD vnum,DWORD fnum,DWORD offset,LPVOID dest)
 {

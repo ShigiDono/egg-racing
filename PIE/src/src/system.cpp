@@ -7,7 +7,8 @@ CPie::CPie()
 {
 	_Start();
 	GUI kk=this->SManager.UI;
-	ZeroMemory(this,sizeof(CPie));
+	//ZeroMemory(this,sizeof(CPie));
+    //TODO^^^ THIS IS VERY BAD!! ^^^
 	SManager.UI=kk;
 	GetCurrentDirectoryA(1024,szAppPath);
 	szAppPath[strlen(szAppPath)]='\\';
@@ -35,7 +36,7 @@ CPie::CPie()
 	AddTab();
 //	delete f;
 }
-LRESULT CALLBACK MainWinProc(
+/*LRESULT CALLBACK MainWinProc(
 							 HWND	hwnd,
 							 UINT	msg,
 							 WPARAM	wparam,
@@ -61,10 +62,10 @@ LRESULT CALLBACK MainWinProc(
 		{
 			if (Render) Render=0; else Render=1;
 			break;
-		}*/
+		}* /
 	}
 	return(DefWindowProc(hwnd,msg,wparam,lparam));
-}
+}*/
 void CPie::SetState(Pie_States State,DWORD Value)
 {
 	switch (State){
@@ -85,39 +86,39 @@ void CPie::SetState(Pie_States State,DWORD Value)
 			break;
 		case PIE_BWIDTH:
 			ScrWidth=Value;
-			d3dp.BackBufferWidth=Value;
+			//d3dp.BackBufferWidth=Value;
 			break;
 		case PIE_BHEIGHT:
 			ScrHeight=Value;
-			d3dp.BackBufferHeight=Value;
+			//d3dp.BackBufferHeight=Value;
 			break;
 		case PIE_BFORMAT:
-			ScrFormat=(D3DFORMAT)Value;
-			d3dp.BackBufferFormat=(D3DFORMAT)Value;
+			//ScrFormat=(D3DFORMAT)Value;
+			//d3dp.BackBufferFormat=(D3DFORMAT)Value;
 			break;
 		case PIE_BWINDOWED:
-			d3dp.Windowed=Value;
+			//d3dp.Windowed=Value;
 			break;
 		case PIE_BRRATE:
-			d3dp.FullScreen_RefreshRateInHz=Value;
+			//d3dp.FullScreen_RefreshRateInHz=Value;
 			break;
 		case PIE_BMULTIS:
-			if (Value) d3dp.MultiSampleType=(D3DMULTISAMPLE_TYPE)1;
-			else d3dp.MultiSampleType=D3DMULTISAMPLE_NONE;
+			//if (Value) d3dp.MultiSampleType=(D3DMULTISAMPLE_TYPE)1;
+			//else d3dp.MultiSampleType=D3DMULTISAMPLE_NONE;
 			break;
 		case PIE_BGROUND:
 			BGround=Value;
 			break;
 		case PIE_FILLMODE:
-			if (Value) d3dd->SetRenderState(D3DRS_FILLMODE,D3DFILL_SOLID);
-			else d3dd->SetRenderState(D3DRS_FILLMODE,D3DFILL_WIREFRAME);
+			//if (Value) d3dd->SetRenderState(D3DRS_FILLMODE,D3DFILL_SOLID);
+			//else d3dd->SetRenderState(D3DRS_FILLMODE,D3DFILL_WIREFRAME);
 			break;
 		case PIE_LIGHTENABLE:
-			if (Value) d3dd->SetRenderState(D3DRS_LIGHTING,true);
-			else d3dd->SetRenderState(D3DRS_LIGHTING,false);
+			//if (Value) d3dd->SetRenderState(D3DRS_LIGHTING,true);
+			//else d3dd->SetRenderState(D3DRS_LIGHTING,false);
 			break;
 		case PIE_TFILTERING:
-			if (Value)
+			/*if (Value)
 			{
 				d3dd->SetSamplerState( 0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR );
 				d3dd->SetSamplerState( 0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR );
@@ -128,10 +129,10 @@ void CPie::SetState(Pie_States State,DWORD Value)
 				d3dd->SetSamplerState( 0, D3DSAMP_MINFILTER, D3DTEXF_NONE );
 				d3dd->SetSamplerState( 0, D3DSAMP_MAGFILTER, D3DTEXF_NONE );
 				d3dd->SetSamplerState( 0, D3DSAMP_MIPFILTER, D3DTEXF_NONE );
-			}
+			}*/
 			break;
 		case PIE_BLENDMODE:
-			if (Value)
+			/*if (Value)
 			{
 				d3dd->SetRenderState( D3DRS_SRCBLEND,         D3DBLEND_ONE );
 				d3dd->SetRenderState( D3DRS_DESTBLEND,        D3DBLEND_ONE );
@@ -140,24 +141,24 @@ void CPie::SetState(Pie_States State,DWORD Value)
 			{
 				d3dd->SetRenderState( D3DRS_SRCBLEND,         D3DBLEND_SRCALPHA );
 				d3dd->SetRenderState( D3DRS_DESTBLEND,        D3DBLEND_INVSRCALPHA );
-			}
+			}*/
 			break;
 		case PIE_TENABLE:
 			break;
 		case PIE_FOGENABLE:
-				d3dd->SetRenderState( D3DRS_FOGENABLE,         Value );
+				//d3dd->SetRenderState( D3DRS_FOGENABLE,         Value );
 			break;
 		case PIE_FOGSTART:
-				d3dd->SetRenderState( D3DRS_FOGSTART,         Value );
+				//d3dd->SetRenderState( D3DRS_FOGSTART,         Value );
 			break;
 		case PIE_FOGEND:
-				d3dd->SetRenderState( D3DRS_FOGEND,         Value );
+				//d3dd->SetRenderState( D3DRS_FOGEND,         Value );
 			break;
 		case PIE_FOGCOLOR:
-				d3dd->SetRenderState( D3DRS_FOGCOLOR,         Value );
+				//d3dd->SetRenderState( D3DRS_FOGCOLOR,         Value );
 			break;
 		case PIE_FOGMODE:
-				d3dd->SetRenderState( D3DRS_FOGVERTEXMODE,         Value );
+				//d3dd->SetRenderState( D3DRS_FOGVERTEXMODE,         Value );
 			break;
 	}
 
@@ -184,13 +185,13 @@ PMesh CPie::FindMesh(LPCSTR _mname)
 }*/
 void CPie::UpdateLight(WORD index)
 {
-	d3dd->SetLight(index,&Lights[index]);
+	//d3dd->SetLight(index,&Lights[index]);
 }
 void CPie::SetLightPos(WORD index,Vector3 pos)
 {
-	Lights[index].Position.x=pos.x;
-	Lights[index].Position.y=pos.y;
-	Lights[index].Position.z=pos.z;
+	//Lights[index].Position.x=pos.x;
+	//Lights[index].Position.y=pos.y;
+	//Lights[index].Position.z=pos.z;
 }
 /*void CPie::CreateModel(LPCSTR mname,WORD index,PModel mdl)
 {
@@ -247,7 +248,7 @@ bool CPie::LoadFilter(LPCSTR FName,PFilter _f)
 }
 void CPie::ApplyFilter(PFilter f)
 {
-	LPDIRECT3DSURFACE9 _BackBuffer=NULL;
+	/*LPDIRECT3DSURFACE9 _BackBuffer=NULL;
 //	d3dd->CreateOffscreenPlainSurface(ScrWidth,ScrHeight,ScrFormat,D3DPOOL_DEFAULT,&_BackBuffer,NULL);
 	D3DLOCKED_RECT r;
 	RECT rr;
@@ -264,14 +265,14 @@ void CPie::ApplyFilter(PFilter f)
 	hr=_BackBuffer->LockRect(&r,NULL,D3DLOCK_DISCARD);
 	memcpy(r.pBits,dest,ScrWidth*ScrHeight);
 	_BackBuffer->UnlockRect();
-//	DELETE(dest);
+//	DELETE(dest);*/
 }
 bool CPie::CWindow()
 {
-	WNDCLASSEX wc;/* = {sizeof(WNDCLASSEX),CS_DBLCLKS, MainWinProc, 0L, 0L,
+	/*WNDCLASSEX wc; = {sizeof(WNDCLASSEX),CS_DBLCLKS, MainWinProc, 0L, 0L,
 		hInst, hIcon, NULL, NULL, NULL,
 		TEXT("PIEWndClass"), NULL
-	};*/
+	};
 	wc.cbClsExtra=0L;
 	wc.cbSize=sizeof(WNDCLASSEX);
 	wc.cbWndExtra=0L;
@@ -290,7 +291,7 @@ bool CPie::CWindow()
 	hWnd=PIECreateWindow(hInst,WS_EX_TOPMOST,DIR3D_WND,"PIEWndClass","]PIE Engine[",0,0,200,200,1);
 	ShowWindow(hWnd,SW_SHOWDEFAULT);
 	UpdateWindow(hWnd);
-	return 1;
+	return 1;*/
 }
 void CPie::System_Log(const char *szFormat, ...)
 {
@@ -316,19 +317,19 @@ void    CPie::UpdateDirectInput()
 	UpdateKeyboardDataImmediate();
 }
 bool					CPie::PrepareScene(){
-	if (FAILED(d3dd->BeginScene())) return 0;
+	/*if (FAILED(d3dd->BeginScene())) return 0;
 	d3dd->Clear(0,NULL,D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER,BGround,1.0f,0);//0L
+    */
 	return 1;
 
 }
 void					CPie::PresentScene(){
-		d3dd->EndScene();
-		d3dd->Present(NULL,NULL,NULL,NULL);
+		/*d3dd->EndScene();
+		d3dd->Present(NULL,NULL,NULL,NULL);*/
 }
-bool CPie::Init(HINSTANCE hinst)
+bool CPie::Init()
 {
-	hInst=hinst;//SManager.Presets.rm=GetPSTexture;
-	if (!CWindow())
+	/*if (!CWindow())
 	{
 		WriteMsg("-->Window init failed.");
 		return 0;
@@ -337,8 +338,26 @@ bool CPie::Init(HINSTANCE hinst)
 	{
 		WriteMsg("-->D3D init failed.");
 		return 0;
-	}
-	if (FAILED(InitDirectInput()))
+	}*/
+    if (SDL_Init(SDL_INIT_EVERYTHING) != 0){
+        WriteMsg("SDL_Init Error: %d\n", SDL_GetError());
+        return 0;
+    }
+    SDL_DisplayMode displayMode;
+    int request = SDL_GetDesktopDisplayMode(0,&displayMode);
+    SDL_Window *win = SDL_CreateWindow("Hello World!", 0, 0, displayMode.w, displayMode.h, SDL_WINDOW_SHOWN);
+    if (win == nullptr){
+        WriteMsg("SDL_CreateWindow Error: %d\n", SDL_GetError());
+        return 0;
+    }
+    SDL_Renderer *ren = SDL_CreateRenderer(win,
+                                 -1,
+                                 SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    if (ren == nullptr){
+        WriteMsg("SDL_CreateRenderer Error: %d\n", SDL_GetError());
+        return 0;
+    }
+    if (FAILED(InitDirectInput()))
 	{
 		WriteMsg("-->DInput init failed.");
 		return 0;
@@ -385,7 +404,7 @@ bool CPie::Init(HINSTANCE hinst)
 }
 void CPie::WindowToggleFullScreen(bool isFullScreen)
 {
-	DWORD Style;
+	/*DWORD Style;
 	int x,y,w,h;
 	if (isFullScreen)
 	{
@@ -405,7 +424,7 @@ void CPie::WindowToggleFullScreen(bool isFullScreen)
 	}
 	SetWindowLong(hWnd,GWL_STYLE,Style);
 	SetWindowPos(hWnd,HWND_TOPMOST,x,y,w,h,SWP_SHOWWINDOW);
-	UpdateWindow(hWnd);
+	UpdateWindow(hWnd);*/
 	/*
 	styleW := WS_POPUP or WS_VISIBLE or WS_CAPTION or WS_SYSMENU or WS_MINIMIZEBOX;
 	styleFS := WS_POPUP or WS_VISIBLE ;
@@ -428,7 +447,7 @@ void CPie::WindowToggleFullScreen(bool isFullScreen)
 }
 void CPie::ToggleFullScreen(bool isFullScreen)
 {
-	bool ww=d3dp.Windowed;
+	/*bool ww=d3dp.Windowed;
 	SManager.Release();
 	MRelease();
 	RELEASE(d3dd);
@@ -461,55 +480,63 @@ void CPie::ToggleFullScreen(bool isFullScreen)
 			ScrWidth=d3dp.BackBufferWidth;
 			ScrHeight=d3dp.BackBufferHeight;
 		}
-	}
+	}*/
 }
 void CPie::Exit()
 {
 	_exit=1;
 }
-int CPie::Run(HINSTANCE hinstance)
+int CPie::Run()
 {
 	MSG msg;
 	DWORD _lt,_llt, _lstep, _ldraw;
 	DWORD cnt1 = 0, cnt2 = 0;
 	_lt=_llt=timeGetTime();
 		ZeroMemory(&msg,sizeof(msg));
-	if (Init(hinstance))
+	if (Init())
 	{
 		System_Log("	Running...");
 		_ldraw = timeGetTime();
-		while(msg.message!=WM_QUIT&&!bError())
-		{
-			if (PeekMessage(&msg,NULL,0,0,PM_REMOVE)){
-				TranslateMessage(&msg);
-				DispatchMessage(&msg);
-			}
-			else{
-				DWORD ct=timeGetTime();
-				if (DeviceLost&&(ct-lt<3000))
-				{
-					//do nothing
-				}
-				else
-				{
-					_lt=timeGetTime();
-					if (_lt-_llt>=20)
-					{
-						//WriteMsg("-->Step");
-						_lstep = timeGetTime();
-						if (!Step())
-							return 0;
-						StepTime = timeGetTime() - _lstep;
-						//WriteMsg("-->Render");
-						_ldraw = timeGetTime();
-						Render();
-						DrawTime = timeGetTime() - _ldraw;
-						if (_exit)
-							break;
-						_llt=_lt;
-					}
-				}
-			}
+		//while(msg.message!=WM_QUIT&&!bError())
+        SDL_Event e;
+        while( !_exit ) {
+		    while( SDL_PollEvent( &e ) != 0 ) {
+                //User requests quit 
+                if( e.type == SDL_QUIT ) {
+                    _exit = true;
+                } 
+        
+			    if (PeekMessage(&msg,NULL,0,0,PM_REMOVE)){
+				    TranslateMessage(&msg);
+				    DispatchMessage(&msg);
+			    }
+			    else{
+				    DWORD ct=timeGetTime();
+				    if (DeviceLost&&(ct-lt<3000))
+				    {
+					    //do nothing
+				    }
+				    else
+				    {
+					    _lt=timeGetTime();
+					    if (_lt-_llt>=20)
+					    {
+						    //WriteMsg("-->Step");
+						    _lstep = timeGetTime();
+						    if (!Step())
+							    return 0;
+						    StepTime = timeGetTime() - _lstep;
+						    //WriteMsg("-->Render");
+						    _ldraw = timeGetTime();
+						    //Render();
+						    DrawTime = timeGetTime() - _ldraw;
+						    if (_exit)
+							    break;
+						    _llt=_lt;
+					    }
+				    }
+			    }
+            }
 		}
 	}
 	Release();
@@ -524,7 +551,7 @@ int CPie::Run(HINSTANCE hinstance)
 bool CPie::InitD3D()
 {
 	//Checking existance...
-	pd3d=NULL;
+	/*pd3d=NULL;
 	pd3d=PIECreate3D();
 	if (pd3d==NULL)
 	{
@@ -615,7 +642,7 @@ bool CPie::InitD3D()
 	{
 		d3dp.AutoDepthStencilFormat			= D3DFMT_D32;
 		return ReInitD3D();
-	}
+	}*/
 	return 1;
 }
 void CPie::AssignCamera(PCamera _Camera)
@@ -690,6 +717,7 @@ float CPie::GetFPS()
 {
 	return Fps;
 }
+#if 0
 void CPie::AddPointLight(D3DCOLORVALUE Diffuse,D3DCOLORVALUE Ambient
 									,D3DCOLORVALUE Specular,Vector3 Position,float Range,
 									float Attenuation0,float Attenuation1,float Attenuation2,bool Enabled)
@@ -721,8 +749,10 @@ void CPie::AddSpotLight(D3DCOLORVALUE Diffuse,D3DCOLORVALUE Ambient
 	AddLight(D3DLIGHT_SPOT,Diffuse,Ambient,Specular,y,x,Falloff,
 		OuterCone,Range,InnerCone,Attenuation0,Attenuation1,Attenuation2,Enabled);
 }
+#endif
 void CPie::DeleteLight(WORD index)
 {
+#if 0
 	if (LightCount==0)
 		return;
 	index%=LightCount;
@@ -731,14 +761,17 @@ void CPie::DeleteLight(WORD index)
 	if (index!=LightCount)
 		swap(Lights[index],Lights[LightCount]);
 	ZeroMemory(&Lights[LightCount],sizeof(D3DLIGHT9));
+#endif
 }
 void CPie::EnableLight(WORD index,bool Enabled)
 {
+#if 0
 	if (LightCount==0)
 		return;
 	index%=LightCount;
 	d3dd->SetLight(index,&Lights[index]);
 	d3dd->LightEnable(index,Enabled);
+#endif
 }
 void CPie::ClearLights()
 {
@@ -749,6 +782,7 @@ void CPie::ClearLights()
         DeleteLight(i);
 	}
 }
+#if 0
 void CPie::AddDirectionalLight(D3DCOLORVALUE Diffuse,D3DCOLORVALUE Ambient
 									,D3DCOLORVALUE Specular,Vector3 Direction,float Range,
 									float Attenuation0,float Attenuation1,float Attenuation2,bool Enabled)
@@ -788,8 +822,10 @@ void CPie::AddLight(D3DLIGHTTYPE Type,D3DCOLORVALUE Diffuse,D3DCOLORVALUE Ambien
 	d3dd->LightEnable(LightCount,Enabled);
 	LightCount++;
 }
+#endif
 bool CPie::ReInitD3D()
 {
+#if 0
 	SetCursor(NULL);
 	RELEASE(d3dd);
 	WriteMsg("-->New video mode");
@@ -851,6 +887,7 @@ bool CPie::ReInitD3D()
 //	d3dd->SetRenderState( D3DRS_SCISSORTESTENABLE,1);
 //	dest=new BYTE[ScrWidth*ScrHeight];
 	return 1;
+#endif
 }
 bool CPie::ResetD3D()
 {
@@ -858,6 +895,7 @@ bool CPie::ResetD3D()
 	WriteMsg("-->New video mode");
 	WriteMsg("-->Width:%d; Heght:%d; Windowed:%d;",ScrWidth,ScrHeight,d3dp.Windowed);
 //	ToggleFullScreen(3dp.Windowed);
+#if 0
 	if (d3dd)
 		RELEASE(d3dd);
 	if (FAILED(d3dd->Reset(&d3dp)))
@@ -899,10 +937,12 @@ bool CPie::ResetD3D()
 	d3dd->SetSamplerState( 0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR );
 //	d3dd->SetRenderState( D3DRS_SCISSORTESTENABLE,1);
 //	dest=new BYTE[ScrWidth*ScrHeight];
+#endif
 	return 1;
 }
 void CPie::PrintScreen(LPCSTR Fname)
 {
+#if 0
 	LPDIRECT3DSURFACE9 _fb=NULL;
 	d3dd->CreateOffscreenPlainSurface(ScrWidth,ScrHeight,(D3DFORMAT)ScrFormat,D3DPOOL_SYSTEMMEM,&_fb,NULL);
 	d3dd->GetBackBuffer(0,0,D3DBACKBUFFER_TYPE_MONO,&_fb);
@@ -913,9 +953,11 @@ void CPie::PrintScreen(LPCSTR Fname)
 	strcat(temp,Fname);
 	D3DXSaveSurfaceToFileA(temp,D3DXIFF_JPG,_fb,NULL,NULL);
 	_fb->Release();	
+#endif
 }
 void CPie::PrintScreen()
 {
+#if 0
 	LPDIRECT3DSURFACE9 _fb=NULL;
 	d3dd->CreateOffscreenPlainSurface(ScrWidth,ScrHeight,(D3DFORMAT)ScrFormat,D3DPOOL_SYSTEMMEM,&_fb,NULL);
 	d3dd->GetBackBuffer(0,0,D3DBACKBUFFER_TYPE_MONO,&_fb);
@@ -935,6 +977,7 @@ void CPie::PrintScreen()
 	this->Ini_SetInt("SCREENSHOT","Count",ScScount);
 	D3DXSaveSurfaceToFileA(temp,D3DXIFF_JPG,_fb,NULL,NULL);
 	_fb->Release();	
+#endif
 }
 void CPie::Release()
 {
@@ -943,8 +986,8 @@ void CPie::Release()
 	SManager.Destroy();
 	MRelease();
 	RRelease();
-	RELEASE(d3dd);
-	RELEASE(pd3d);
+	//RELEASE(d3dd);
+	//RELEASE(pd3d);
 	FreeDirectInput();
 }
 void CPie::SetUInitFunc(PIECallback Func)

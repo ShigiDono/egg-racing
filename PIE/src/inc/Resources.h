@@ -30,7 +30,7 @@ typedef enum _RESOURCE_TYPE
 	RESOURCE_MUSIC				= 0x04,
 	RESOURCE_SOUND				= 0x05,
 }RESOURCE_TYPE;
-void AssignDevice(LPDIRECT3DDEVICE9 _d3dd,DWORD w,DWORD h,char* CDir);
+//void AssignDevice(LPDIRECT3DDEVICE9 _d3dd,DWORD w,DWORD h,char* CDir);
 
 class CResource
 {
@@ -66,7 +66,7 @@ public:
 	void 					Destroy();
 	bool 					Reset();
 	void					Set(DWORD num);
-	void					SetState(D3DTEXTURESTAGESTATETYPE type,DWORD Value);
+	//void					SetState(D3DTEXTURESTAGESTATETYPE type,DWORD Value);
 };
 
 class CRModel : public CResource

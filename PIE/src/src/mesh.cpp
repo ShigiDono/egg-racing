@@ -2,21 +2,22 @@
 #include"mesh.h"
 #include"ParticleSystem.h"
 #include"terrain.h"
-LPDIRECT3DDEVICE9 md3dd=NULL;
-const int DEFAULT_STEP=80;
+/*LPDIRECT3DDEVICE9 md3dd=NULL;
 LPDIRECT3DINDEXBUFFER9	rib=NULL;
 LPDIRECT3DINDEXBUFFER9	tib=NULL;
-LPDIRECT3DVERTEXBUFFER9 pvb[128];
+LPDIRECT3DVERTEXBUFFER9 pvb[128];*/
+//LPDIRECT3DVERTEXBUFFER9 rvb=NULL;
+//LPDIRECT3DVERTEXBUFFER9 lvb=NULL;
+//LPD3DXLINE				_line = NULL;
 LPVOID					vdata[128];
 int						st[128];
-TPVertex				_vert[128][128];
 bool					locked[128];
-LPDIRECT3DVERTEXBUFFER9 rvb=NULL;
-LPDIRECT3DVERTEXBUFFER9 lvb=NULL;
-LPD3DXLINE				_line = NULL;
+TPVertex				_vert[128][128];
+const int DEFAULT_STEP=80;
 WORD ic1[TILE_SIZE*6];
 
 char _mszAppPath[MAX_PATH];
+#if 0
 void MHAssignDevice(LPDIRECT3DDEVICE9 _d3dd,char *CDir)
 {
 	md3dd=_d3dd;
@@ -113,8 +114,10 @@ void MHAssignDevice(LPDIRECT3DDEVICE9 _d3dd,char *CDir)
 		D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY | D3DUSAGE_POINTS, POINTVERTEX,
 		D3DPOOL_DEFAULT, &pvb,NULL);*/
 }
+#endif
 void MRelease()
 {
+#if 0
 	RELEASE(rib);
 	RELEASE(tib);
 	RELEASE(rvb);
@@ -123,10 +126,12 @@ void MRelease()
 		RELEASE(pvb[i]);
 	}	
 	RELEASE(lvb);
+#endif
 }
 void DrawLine(Vector3 v1,Vector3 v2,DWORD cl1,DWORD cl2)
 {
-	md3dd->SetRenderState(D3DRS_LIGHTING,0);
+#if 0
+    md3dd->SetRenderState(D3DRS_LIGHTING,0);
 	TPVertex _t[2];
 	_t[0].p=v1;
 	_t[0].Color=cl1;
@@ -141,10 +146,12 @@ void DrawLine(Vector3 v1,Vector3 v2,DWORD cl1,DWORD cl2)
 	lvb->Unlock();
 	md3dd->DrawPrimitive(D3DPT_LINELIST,0,1);
 //	md3dd->SetRenderState(D3DRS_LIGHTING,1);
+#endif
 }
 
 void DrawLineEx(Vector3 v1, Vector3 v2, DWORD color, float width)
 {
+#if 0
 	if (FAILED(_line->SetGLLines(TRUE)))
 		return;
 	if (FAILED(_line->SetWidth(width)))
@@ -161,6 +168,7 @@ void DrawLineEx(Vector3 v1, Vector3 v2, DWORD color, float width)
 
 //	_line->DrawTransform()
 	_line->End();
+#endif
 }
 CMesh::CMesh()
 {
@@ -183,6 +191,7 @@ void CMesh::AssignIndexData(WORD *i,DWORD _fnum)
 }
 bool CMesh::MakeBuffers()
 {
+#if 0
 	if (!CreateBuffers) return 1;
 	ib=PIECreateIndexBuffer(md3dd,indices,fnum,ib);
 	if (!ib){
@@ -196,6 +205,7 @@ bool CMesh::MakeBuffers()
 		RELEASE(ib);
 		return 0;
 	}
+#endif
 	return 1;
 }
 bool CMesh::LoadFromFile(LPCSTR FName,FLOAT athres,FLOAT vthres,FLOAT txtrthres,bool InvertNormals)
@@ -209,10 +219,12 @@ bool CMesh::LoadFromFile(LPCSTR FName,FLOAT athres,FLOAT vthres,FLOAT txtrthres,
 	strcat(_FName,FName);
 	ZeroMemory(__fname,MAX_PATH);
 	memcpy(__fname,FName,strlen(FName));
+#if 0
 	if (!PIELoadModel (_FName,1,&vnum,&fnum,&mats,__indices,__vertices,&BMin,&BMax,athres,vthres,txtrthres,InvertNormals)){
 		PutError("Can't load mesh %s;",_FName);
 		return 0;
 	}
+#endif
 /*EXPORT BOOL PIELoadModel (LPCSTR fname,DWORD ModelKind,
 											   DWORD *vnum,DWORD *fnum,D3DMATERIAL9 *mat,
 											   WORD **IndexData,LPVOID VertexData,
@@ -245,6 +257,7 @@ void CMesh::DrawAsLines(DWORD Color)
 }
 void CMesh::Draw()
 {
+#if 0
 	if (!DrawMesh) return;
 	if (InvertN){
 	    md3dd->SetRenderState( D3DRS_ZWRITEENABLE, FALSE );
@@ -267,9 +280,11 @@ void CMesh::Draw()
 	md3dd->SetStreamSource(0,vb,0,sizeof(TVertex3D));
 	md3dd->SetIndices(ib);
 	md3dd->DrawIndexedPrimitive(D3DPT_TRIANGLELIST,0,0,vnum,0,fnum);
+#endif
 }
 void CMesh::Draw1()
 {
+#if 0
 	if (!DrawMesh) return;
 	if (InvertN){
 	    md3dd->SetRenderState( D3DRS_ZWRITEENABLE, FALSE );
@@ -290,6 +305,7 @@ void CMesh::Draw1()
 	md3dd->SetMaterial(&mats);
 	md3dd->SetFVF(VERTEX3D);
 	md3dd->DrawIndexedPrimitiveUP(D3DPT_TRIANGLELIST,0,vnum,fnum,indices,D3DFMT_INDEX16,vertices,sizeof(TVertex3D));//(D3DPT_TRIANGLELIST,0,0,vnum,0,fnum);
+#endif
 }
 CPRect::CPRect()
 {
@@ -297,7 +313,9 @@ CPRect::CPRect()
 	for (int i=0;i<4;i++)
 	{
 		v[i].p.w=1.0f;
+#if 0
 		v[i].color=D3DCOLOR_XRGB(255,255,255);
+#endif
 	}
 }
 void CPRect::SetPos(int ind,Vector3 _p)
@@ -318,12 +336,15 @@ void CPRect::SetColor(int ind,DWORD _Color)
 void CPRect::Update()
 {
 	void* Vrt;
+#if 0
 	rvb->Lock( 0, sizeof(v), (void**)&Vrt, 0 );
 	memcpy(Vrt,v,sizeof(v));
     rvb->Unlock();
+#endif
 }
 void CPRect::Draw()
 {
+#if 0
     md3dd->SetRenderState( D3DRS_CULLMODE, D3DCULL_NONE );
 
     // Turn off D3D lighting, since we are providing our own vertex colors
@@ -332,6 +353,7 @@ void CPRect::Draw()
 	md3dd->SetFVF(VERTEX2D);
 	md3dd->SetIndices(rib);
 	md3dd->DrawIndexedPrimitive(D3DPT_TRIANGLELIST,0,0,6,0,2);
+#endif
 //	md3dd->DrawPrimitive(D3DPT_TRIANGLESTRIP,0,2);
 }
 CModel::CModel()
@@ -355,6 +377,7 @@ void CDParticleSystem::Render()
 	//new version)
 //	TPVertex _vert[128];
 //	void *pp;
+#if 0
 	TPVertex _temp;
 	md3dd->SetRenderState(D3DRS_LIGHTING,0);
     md3dd->SetRenderState( D3DRS_ZWRITEENABLE, FALSE );
@@ -502,10 +525,11 @@ void CDParticleSystem::Render()
 //    md3dd->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INS );
 	md3dd->SetRenderState( D3DRS_SRCBLEND,         D3DBLEND_SRCALPHA );
 	md3dd->SetRenderState( D3DRS_DESTBLEND,        D3DBLEND_INVSRCALPHA );
+#endif
 }
 void CPTile::Create(TeVertex *v)
 {
-;
+#if 0
 	int pos=0;
 	byte r=rand()%128+127,g=rand()%128+127,b=rand()%128+127;
 	Cl=D3DCOLOR_XRGB(r,g,b);
@@ -569,6 +593,7 @@ void CPTile::Create(TeVertex *v)
 	buff->Lock(0,(TILE_SIZE)*(TILE_SIZE)*4*sizeof(TeVertex),(void**)&dta,D3DLOCK_DISCARD);
 	memcpy(dta,v,sizeof(TeVertex)*(TILE_SIZE)*(TILE_SIZE)*4);
 	buff->Unlock();
+#endif
 }
 void CPTile::Draw()
 {
@@ -608,6 +633,7 @@ void CPTile::Draw()
 //			DrawLine(c->Pos, Ma, 0xffff0000, 0xffff0000);
 			DrawLineEx(Vector3(0, 0, 0), Vector3(100, 100, 0), 0xff00ff00, 4.0f);
 		}*/
+#if 0
 		if (SUCCEEDED(md3dd->SetStreamSource(0,buff,0,sizeof(TeVertex)))){
 			md3dd->SetFVF(TERRAINVERTEX);
 			if (SUCCEEDED(md3dd->SetIndices(tib))){
@@ -618,6 +644,7 @@ void CPTile::Draw()
 				}
 			}
 		}
+#endif
 	//normals
 		HMap->dr++;
 	}

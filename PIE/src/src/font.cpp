@@ -1,6 +1,7 @@
 #include"stdafx.h"
 #include"font.h"
 DWORD _ScrWidth,_ScrHeight;
+#if 0
 LPDIRECT3DDEVICE9 fd3dd;
 void FAssign(LPDIRECT3DDEVICE9 _d3dd,DWORD w,DWORD h)
 {
@@ -8,13 +9,17 @@ void FAssign(LPDIRECT3DDEVICE9 _d3dd,DWORD w,DWORD h)
 	_ScrHeight=h;
 	fd3dd=_d3dd;
 }
+#endif
 DWORD Blend(DWORD Color1,DWORD Color2,float Val)
 {
 	short int a=GetAValue(Color1)*Val+GetAValue(Color2)*(1-Val);
 	short int r=GetRValue(Color1)*Val+GetRValue(Color2)*(1-Val);
 	short int g=GetGValue(Color1)*Val+GetGValue(Color2)*(1-Val);
 	short int b=GetBValue(Color1)*Val+GetBValue(Color2)*(1-Val);
+#if 0
 	return D3DCOLOR_ARGB(a,b,g,r);
+#endif
+    return 0;
 }
 /*HRESULT CreateText(LPDIRECT3DVERTEXBUFFER9* Buffer,char* Text,float x0,float y0,float W,float H,int* Size)
 {
@@ -131,6 +136,7 @@ void CFont::Destroy()
 }
 void CFont::PDrawTextEx(DWORD lx,DWORD ly,DWORD rx,DWORD ry,DWORD Color1,DWORD Color2,GRADIENT type,LPCSTR Text)
 {
+#if 0
 	if (Sm)
 	{
 	    fd3dd->SetSamplerState( 0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR );
@@ -239,6 +245,7 @@ void CFont::PDrawTextEx(DWORD lx,DWORD ly,DWORD rx,DWORD ry,DWORD Color1,DWORD C
 		i++;
 	}
 	txt->SetNullTexture();
+#endif
 }
 void CFont::PDrawText(DWORD xpos,DWORD ypos,LPCSTR text)
 {

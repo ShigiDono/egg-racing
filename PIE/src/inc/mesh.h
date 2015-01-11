@@ -2,7 +2,7 @@
 #define PIE_MESH
 #include"main.h"
 //#include"t_and_s.h"
-void MHAssignDevice(LPDIRECT3DDEVICE9 _d3dd,char *CDir);
+//void MHAssignDevice(LPDIRECT3DDEVICE9 _d3dd,char *CDir);
 #define POINTVERTEX (D3DFVF_XYZ | D3DFVF_PSIZE | D3DFVF_DIFFUSE)
 struct TPVertex
 {
@@ -19,13 +19,13 @@ public:
 	CMesh();
 	TVertex3D				*vertices;
 	WORD					*indices;
-	D3DMATERIAL9			mats;
+//	D3DMATERIAL9			mats;
 	char					__fname[MAX_PATH];
 	DWORD					fnum, vnum;
 	void					AssignVertexData(TVertex3D *v,DWORD _vnum);
 	void					AssignIndexData(WORD *i,DWORD _fnum);
-	LPDIRECT3DVERTEXBUFFER9 vb;
-	LPDIRECT3DINDEXBUFFER9	ib;
+//	LPDIRECT3DVERTEXBUFFER9 vb;
+//	LPDIRECT3DINDEXBUFFER9	ib;
 	void					Release(){RELEASE(vb);RELEASE(ib);}
 	bool					Reset(){Release();return MakeBuffers();}
 	bool					MakeBuffers();

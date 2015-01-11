@@ -16,7 +16,7 @@ public:
 		memcpy(&ZNear,&_znear,4);
 		memcpy(&ZFar,&_zfar,4);
 	}
-	void Assign(LPDIRECT3DDEVICE9 _d3dd);
+//	void Assign(LPDIRECT3DDEVICE9 _d3dd);
 	void Set();
 	Vector3 Pos,At,Up;
 	FLOAT FOV,Aspect,ZNear,ZFar;

@@ -45,31 +45,31 @@ LONG   PIEFindByte  (HANDLE file,LONG offset,BYTE data);
 void PIESkipBytes(HANDLE file,DWORD bytes); 
 
 //funcs ( i dont know why i gave this name to this)))
-D3DCOLORVALUE PIEMakeColor(BYTE a,BYTE r,BYTE g,BYTE b);
-D3DMATERIAL9  PIEMakeMaterial(D3DCOLORVALUE a,D3DCOLORVALUE d,D3DCOLORVALUE s,D3DCOLORVALUE e,FLOAT p);
-D3DMATERIAL9  PIEReadMaterial(HANDLE file);
-LPDIRECT3D9 PIECreate3D();
-BOOL PIEInitDirect3D(HWND hwnd,LPDIRECT3D9 pd3d,LPDIRECT3DDEVICE9 *d3dd,D3DPRESENT_PARAMETERS d3dp,DWORD vp,D3DDEVTYPE dt);
-void PIESetParams(D3DPRESENT_PARAMETERS *d3dp,HWND hwnd,D3DFORMAT BackBufferFormat,int Width,int Height,int RefreshRate,bool Windowed,
-	short int BackBufferCount,D3DMULTISAMPLE_TYPE MultiSampleType,DWORD MultiSamleQuality);
+//D3DCOLORVALUE PIEMakeColor(BYTE a,BYTE r,BYTE g,BYTE b);
+//D3DMATERIAL9  PIEMakeMaterial(D3DCOLORVALUE a,D3DCOLORVALUE d,D3DCOLORVALUE s,D3DCOLORVALUE e,FLOAT p);
+//D3DMATERIAL9  PIEReadMaterial(HANDLE file);
+//LPDIRECT3D9 PIECreate3D();
+//BOOL PIEInitDirect3D(HWND hwnd,LPDIRECT3D9 pd3d,LPDIRECT3DDEVICE9 *d3dd,D3DPRESENT_PARAMETERS d3dp,DWORD vp,D3DDEVTYPE dt);
+//void PIESetParams(D3DPRESENT_PARAMETERS *d3dp,HWND hwnd,D3DFORMAT BackBufferFormat,int Width,int Height,int RefreshRate,bool Windowed,
+//	short int BackBufferCount,D3DMULTISAMPLE_TYPE MultiSampleType,DWORD MultiSamleQuality);
 //Ini
 bool PIEReadIni(char* section,char* key,char* path,char* result);
 bool PIEWriteIni(char* section,char* key,char* path,char* str);
 //Light
-void PIECreateLight(D3DLIGHT9 *Light,D3DLIGHTTYPE Type,D3DCOLORVALUE Diffuse,D3DCOLORVALUE Ambient,D3DCOLORVALUE Specular,
-										D3DVECTOR Direction,D3DVECTOR Position,float Fallof,float Phi,float Range,
-										float Theta,float Attenuation0,float Attenuation1,float Attenuation2,bool Enabled);
-void PIESetLight(LPDIRECT3DDEVICE9 d3dd,D3DLIGHT9 Light,DWORD Index,bool Enabled);
+//void PIECreateLight(D3DLIGHT9 *Light,D3DLIGHTTYPE Type,D3DCOLORVALUE Diffuse,D3DCOLORVALUE Ambient,D3DCOLORVALUE Specular,
+										//D3DVECTOR Direction,D3DVECTOR Position,float Fallof,float Phi,float Range,
+										//float Theta,float Attenuation0,float Attenuation1,float Attenuation2,bool Enabled);
+//void PIESetLight(LPDIRECT3DDEVICE9 d3dd,D3DLIGHT9 Light,DWORD Index,bool Enabled);
 //matrix
-void PIETransform(LPDIRECT3DDEVICE9 d3dd,D3DTRANSFORMSTATETYPE t,D3DXMATRIX *Matrix);
-void PIESetCamera(LPDIRECT3DDEVICE9 d3dd,D3DXVECTOR3 Eye,D3DXVECTOR3 At,D3DXVECTOR3 Up,FLOAT FieldOfView,
-									  FLOAT Aspect,FLOAT ZNear,FLOAT ZFar);
+//void PIETransform(LPDIRECT3DDEVICE9 d3dd,D3DTRANSFORMSTATETYPE t,D3DXMATRIX *Matrix);
+//void PIESetCamera(LPDIRECT3DDEVICE9 d3dd,D3DXVECTOR3 Eye,D3DXVECTOR3 At,D3DXVECTOR3 Up,FLOAT FieldOfView,
+//									  FLOAT Aspect,FLOAT ZNear,FLOAT ZFar);
 //<--Models-->
 struct TVertex3D
 {
 	Vector3 p;
 	Vector3 n;
-	FLOAT tu, tv;
+    GLfloat tu, tv;
 };
 struct TNode
 {
@@ -89,7 +89,7 @@ struct Header
 {
 	char Version;
 	DWORD vnum[256],fnum[256],totalfnum,totalvnum;
-	D3DMATERIAL9 mat[256];
+	//D3DMATERIAL9 mat[256];
 	BYTE mn;
 	char tfname[256];
 	BYTE Textured;
@@ -99,16 +99,16 @@ struct ChunkHeader
 	WORD ID;
 	DWORD Length;
 };
-BOOL PIELoadModel (LPCSTR fname,DWORD ModelKind,
+/*BOOL PIELoadModel (LPCSTR fname,DWORD ModelKind,
 											   DWORD *vnum,DWORD *fnum,D3DMATERIAL9 *mat,
 											   WORD **IndexData,LPVOID VertexData,
 											   Vector3 *Min,Vector3 *Max,
-											   FLOAT athres,FLOAT vthres,FLOAT txtrthres,bool InvertNormals);
-LPDIRECT3DINDEXBUFFER9 PIECreateIndexBuffer(LPDIRECT3DDEVICE9 d3dd,WORD *indices,DWORD fnum,LPDIRECT3DINDEXBUFFER9 ind);
-LPDIRECT3DVERTEXBUFFER9 PIECreateVertexBuffer(LPDIRECT3DDEVICE9 d3dd,LPVOID vertices,DWORD vnum,DWORD FVF,DWORD size,LPDIRECT3DVERTEXBUFFER9 vb);
+											   FLOAT athres,FLOAT vthres,FLOAT txtrthres,bool InvertNormals);*/
+//LPDIRECT3DINDEXBUFFER9 PIECreateIndexBuffer(LPDIRECT3DDEVICE9 d3dd,WORD *indices,DWORD fnum,LPDIRECT3DINDEXBUFFER9 ind);
+//LPDIRECT3DVERTEXBUFFER9 PIECreateVertexBuffer(LPDIRECT3DDEVICE9 d3dd,LPVOID vertices,DWORD vnum,DWORD FVF,DWORD size,LPDIRECT3DVERTEXBUFFER9 vb);
 //Windows
-HWND PIECreateWindow(HINSTANCE hinst,DWORD Style,DWORD dwStyle,char* ClassName,char* Caption,int X,int Y,int Width,int Height,bool ShowCursor);
-bool PIERegisterWNDClass(HINSTANCE hinst,UINT style,WNDPROC WndProc,char* ClassName,HICON Icon);
-void D3DMtoM3M(D3DXMATRIX m,Matrix3x3 *res);
+//HWND PIECreateWindow(HINSTANCE hinst,DWORD Style,DWORD dwStyle,char* ClassName,char* Caption,int X,int Y,int Width,int Height,bool ShowCursor);
+//bool PIERegisterWNDClass(HINSTANCE hinst,UINT style,WNDPROC WndProc,char* ClassName,HICON Icon);
+//void D3DMtoM3M(D3DXMATRIX m,Matrix3x3 *res);
 
 #endif PIE_ENGINE__

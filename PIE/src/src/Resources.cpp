@@ -1,6 +1,6 @@
 #include"stdafx.h"
 #include"Resources.h"
-LPDIRECT3DDEVICE9 rd3dd=NULL;
+//LPDIRECT3DDEVICE9 rd3dd=NULL;
 char AppPath[MAX_PATH];
 CRModel *CM;
 bool rGlow=0;
@@ -24,7 +24,7 @@ void RRelease()
 	_rm.Destroy();
 	Presets.Clear();
 }
-void AssignDevice(LPDIRECT3DDEVICE9 _d3dd,DWORD w,DWORD h,char* CDir)
+/*void AssignDevice(LPDIRECT3DDEVICE9 _d3dd,DWORD w,DWORD h,char* CDir)
 {
 	ZeroMemory(AppPath,MAX_PATH);
 	strcpy(AppPath,CDir);
@@ -35,7 +35,7 @@ void AssignDevice(LPDIRECT3DDEVICE9 _d3dd,DWORD w,DWORD h,char* CDir)
 	FilesAssign(CDir);
 	rd3dd=_d3dd;
 	FAssign(_d3dd,w,h);
-}
+}*/
 CRMesh::CRMesh()
 {
 	Mesh=new CMesh;
@@ -120,10 +120,12 @@ void CRTexture::Set(DWORD num)
 {
 	Texture->SetTexture(num);
 }
+#if 0
 void CRTexture::SetState(D3DTEXTURESTAGESTATETYPE type,DWORD Value)
 {
 	Texture->SetStage(type,Value);
 }
+#endif
 CRModel::CRModel()
 {
 //	ZeroMemory(this,sizeof(CRModel));
@@ -161,24 +163,25 @@ void CRModel::UpdatePS(scalar dt)
 
 void CRModel::DrawBMesh(DWORD color)
 {
+#if 0
 	if (PHmesh!=NULL){
-	D3DXMATRIX xx,yy,rx,ry,rz,rx1,ry1,rz1,res,xx1,yy1,rr1,res1;
-	D3DXMatrixTranslation(&xx,Translation.x,Translation.y,Translation.z);
-	D3DXMatrixScaling(&yy,Scaling.x,Scaling.y,Scaling.z);
-	D3DXMatrixRotationX(&rx,Rotation.x);
-	D3DXMatrixRotationY(&ry,Rotation.y);
-	D3DXMatrixRotationZ(&rz,Rotation.z);
-	D3DXMatrixRotationX(&rx1,Rot.x);
-	D3DXMatrixRotationY(&ry1,Rot.y);
-	D3DXMatrixRotationZ(&rz1,Rot.z);
-//	D3DXMatrixRotationYawPitchRoll(&rx,Rotation.y,Rotation.x,Rotation.z);
-	D3DXMatrixMultiply(&res,&ry,&ry1);
-	D3DXMatrixMultiply(&res,&res,&rx);
-	D3DXMatrixMultiply(&res,&res,&rx1);
-	D3DXMatrixMultiply(&res,&res,&rz);
-	D3DXMatrixMultiply(&res,&res,&rz1);
-	D3DXMatrixMultiply(&res,&res,&yy);
-	D3DXMatrixMultiply(&res,&res,&xx);
+	    D3DXMATRIX xx,yy,rx,ry,rz,rx1,ry1,rz1,res,xx1,yy1,rr1,res1;
+	    D3DXMatrixTranslation(&xx,Translation.x,Translation.y,Translation.z);
+	    D3DXMatrixScaling(&yy,Scaling.x,Scaling.y,Scaling.z);
+	    D3DXMatrixRotationX(&rx,Rotation.x);
+	    D3DXMatrixRotationY(&ry,Rotation.y);
+	    D3DXMatrixRotationZ(&rz,Rotation.z);
+	    D3DXMatrixRotationX(&rx1,Rot.x);
+	    D3DXMatrixRotationY(&ry1,Rot.y);
+	    D3DXMatrixRotationZ(&rz1,Rot.z);
+    //	D3DXMatrixRotationYawPitchRoll(&rx,Rotation.y,Rotation.x,Rotation.z);
+	    D3DXMatrixMultiply(&res,&ry,&ry1);
+	    D3DXMatrixMultiply(&res,&res,&rx);
+	    D3DXMatrixMultiply(&res,&res,&rx1);
+	    D3DXMatrixMultiply(&res,&res,&rz);
+	    D3DXMatrixMultiply(&res,&res,&rz1);
+	    D3DXMatrixMultiply(&res,&res,&yy);
+	    D3DXMatrixMultiply(&res,&res,&xx);
 
 
 
@@ -192,9 +195,11 @@ void CRModel::DrawBMesh(DWORD color)
 		PHmesh->Mesh->DrawAsLines(color);
 		rd3dd->SetTransform(D3DTS_WORLD,&res1);
 	}
+#endif
 }
 void CRModel::Draw(DWORD tind)
 {
+#if 0
 //	time1 = timeGetTime();
 	PCamera cam=GetCurrentCamera();
 //	D3DXMATRIX rx,ry,rz,rx1,ry1,rz1,res,res1,res2,xx,yy,rr1,xx1,yy1;
@@ -292,10 +297,12 @@ void CRModel::Draw(DWORD tind)
 	rd3dd->SetTexture(0,NULL);
 	if (Texture)
 		rd3dd->SetTexture(tind,NULL);
+#endif
 }
 Vector3 CRModel::GetVertex(WORD ind)
 {
 	Vector3 _res=Mesh->Mesh->vertices[ind].p;
+#if 0
 //	_res.Rotate(Vector3(0,Rot.y,0));
 //	_res.Rotate(Vector3(0,0,Rotation.z));
 //	_res.Rotate(Vector3(0,Rotation.y,0));
@@ -341,7 +348,7 @@ Vector3 CRModel::GetVertex(WORD ind)
 	_res.z = out.z;
 
 
-	
+#endif
 	return _res;//Mesh->Mesh->vertices[ind].p;
 }
 void	CRModel::DrawPS()
@@ -545,7 +552,8 @@ bool CRModel::LoadFromFile(LPCSTR FName,LPCSTR rname){
 }
 void CRModel::DrawEx(DWORD tind,Vector3 pos)
 {
-	D3DXMATRIX res,res1;
+#if 0
+    D3DXMATRIX res,res1;
 	D3DXMatrixTranslation(&res,pos.x,pos.y,pos.z);
 //	D3DXMatrixScaling(&yy,Scaling.x,Scaling.y,Scaling.z);
 //	D3DXMatrixRotationYawPitchRoll(&rx,Rotation.y,Rotation.x,Rotation.z);
@@ -563,9 +571,11 @@ void CRModel::DrawEx(DWORD tind,Vector3 pos)
 		Mesh->Draw();
 	rd3dd->SetTransform(D3DTS_WORLD,&res1);
 	rd3dd->SetTexture(0,NULL);
+#endif
 }
 void CRModel::DrawExx(DWORD tind,Vector3 pos,Vector3 rot)
 {
+#if 0
 	D3DXMATRIX xx,rx,res,xx1,rx1,res1;
 	D3DXMatrixTranslation(&xx,pos.x,pos.y,pos.z);
 //	D3DXMatrixScaling(&yy,Scaling.x,Scaling.y,Scaling.z);
@@ -584,6 +594,7 @@ void CRModel::DrawExx(DWORD tind,Vector3 pos,Vector3 rot)
 		Mesh->Draw();
 	rd3dd->SetTransform(D3DTS_WORLD,&res1);
 	rd3dd->SetTexture(0,NULL);
+#endif
 }
 /*CRParticleSystem::CRParticleSystem()
 {
@@ -1052,8 +1063,10 @@ PTexture GetPSTexture(LPCSTR name)
 }
 void CScene::Render()
 {
+#if 0
 	if (Camera)
 		Camera->Assign(rd3dd);
+#endif
 	if (Draw)
 		(Draw)((DWORD)this);
 }
