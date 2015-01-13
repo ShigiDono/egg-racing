@@ -12,6 +12,7 @@ require.config({
 
 
 require(["glMatrix"], function(gl_matrix) {
+	var vec3 = gl_matrix.vec3;
 	function binaryFile(data) {
 		this.data = new DataView(data);
 	    this.byteArray = new Uint8Array(data);
@@ -132,10 +133,6 @@ require(["glMatrix"], function(gl_matrix) {
 			}
 			if (count == undefined) {
 				count = 1;
-				console.log("!!!");
-			}
-			if (count != 1) {
-				console.log(count);
 			}
 			var result = [];
 			for (var i = 0; i < count; i++) {
@@ -144,9 +141,23 @@ require(["glMatrix"], function(gl_matrix) {
 			return result;
 		}
 	}
-	function stringParserSpawner(count) {
+	function stringParserSpawner(_count) {
 		return function(file, data) {
-			return file.readNullTerminatedString();
+			var count;
+			if (typeof _count == "function") {
+				count = _count(data);
+			} else {
+				count = _count;
+			}
+			if (count == undefined || count == 1) {
+				return file.readNullTerminatedString();
+			}
+			var result = [];
+			while (count) {
+				result.push(file.readNullTerminatedString());
+				count--;
+			}
+			return result;
 		}
 	}
 	Uint32Parser = Uint32ParserSpawner();
@@ -174,14 +185,16 @@ require(["glMatrix"], function(gl_matrix) {
 		['ffar', Float32Parser],
 		['terrain', [
 				['height_map', Uint8ParserSpawner(function(data) {return data.parent.w*data.parent.h;})],
-				['temp_t', Uint16ParserSpawner(function(data) {return data.parent.w*data.parent.h;})],
+				['t_coord', Uint16ParserSpawner(function(data) {return data.parent.w*data.parent.h;})],
 				['ts', Uint32Parser],
 				['t_width', Uint32Parser],
 				['t_height', Uint32Parser],
 				['t_count', Uint32Parser],
-				['textures', texturesParserSpawner(function(data) {return data.t_count;})],
+				['textures_data', texturesParserSpawner(function(data) {return data.t_count;})],
 				['t_def', Uint32Parser],
 				['t_def1', Uint32Parser],
+				['textures_count', Uint32Parser],
+				['textures', stringParserSpawner(function(data) {return data.textures_count})],
 			]
 		],
 	];
@@ -251,20 +264,39 @@ require(["glMatrix"], function(gl_matrix) {
 			//check this on 
 
 			// join to single buffer: done!
+			var t, s;
 			for (var y = this.y; y < this.y + chunk.size; y++) {
 				for (var x = this.x; x < this.x + chunk.size; x++) {
 					if ((x + 1 > this.config.w) || (y + 1 > this.config.h)) {
 						
 					} else {
+						//t = (this.config.terrain.t_coord[x + y*this.config.w] % this.config.terrain.t_width) / this.config.terrain.t_width;
+						//uv[1] = Math.floor(this.config.terrain.t_coord[x + y*this.config.w] / this.config.terrain.t_width) / this.config.terrain.t_height;
+						this.generate_color(x, y);
+						this.generate_color(x + 1, y);
+						this.generate_color(x, y + 1);
+						this.generate_color(x + 1, y + 1);
 						vertices.push(
 							x * this.config.h_scale, y * this.config.h_scale, this.get_height(x, y),
-							color[0], color[1], color[2], 1,
+							this.config.terrain.colors[x + y*this.config.w][0], this.config.terrain.colors[x + y*this.config.w][1], this.config.terrain.colors[x + y*this.config.w][2], 1,
+							//color[0], color[1], color[2], 1,
+								(this.config.terrain.t_coord[x + y*this.config.w] % this.config.terrain.t_width) / this.config.terrain.t_width,
+								Math.floor(this.config.terrain.t_coord[x + y*this.config.w] / this.config.terrain.t_width) / this.config.terrain.t_height,
 							(x + 1) * this.config.h_scale, y * this.config.h_scale, this.get_height(x + 1, y),
-							color[0], color[1], color[2], 1,
+							this.config.terrain.colors[x + 1 + y*this.config.w][0], this.config.terrain.colors[x + 1 + y*this.config.w][1], this.config.terrain.colors[x + 1 + y*this.config.w][2], 1,
+							//color[0], color[1], color[2], 1,
+								(this.config.terrain.t_coord[x + y*this.config.w] % this.config.terrain.t_width) / this.config.terrain.t_width,
+								Math.floor(this.config.terrain.t_coord[x + y*this.config.w] / this.config.terrain.t_width + 1) / this.config.terrain.t_height,
 							x * this.config.h_scale, (y + 1) * this.config.h_scale, this.get_height(x, y + 1),
-							color[0], color[1], color[2], 1,
+							this.config.terrain.colors[x + (y + 1)*this.config.w][0], this.config.terrain.colors[x + (y + 1)*this.config.w][1], this.config.terrain.colors[x + (y + 1)*this.config.w][2], 1,
+							//color[0], color[1], color[2], 1,
+								(this.config.terrain.t_coord[x + y*this.config.w] % this.config.terrain.t_width + 1) / this.config.terrain.t_width,
+								Math.floor(this.config.terrain.t_coord[x + y*this.config.w] / this.config.terrain.t_width) / this.config.terrain.t_height,
 							(x + 1) * this.config.h_scale, (y + 1) * this.config.h_scale, this.get_height(x + 1, y + 1),
-							color[0], color[1], color[2], 1
+							this.config.terrain.colors[x + 1 + (y + 1)*this.config.w][0], this.config.terrain.colors[x + 1 + (y + 1)*this.config.w][1], this.config.terrain.colors[x + 1 + (y + 1)*this.config.w][2], 1,
+							//color[0], color[1], color[2], 1,
+								(this.config.terrain.t_coord[x + y*this.config.w] % this.config.terrain.t_width + 1) / this.config.terrain.t_width,
+								Math.floor(this.config.terrain.t_coord[x + y*this.config.w] / this.config.terrain.t_width + 1) / this.config.terrain.t_height
 						);
 					}
 				}
@@ -273,6 +305,46 @@ require(["glMatrix"], function(gl_matrix) {
 			this.vertex_buffer = gl.createBuffer();
 			gl.bindBuffer(gl.ARRAY_BUFFER, this.vertex_buffer);
 			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+		},
+		generate_color: function(x, y) {
+			if (typeof this.config.terrain.colors == "undefined") {
+				this.config.terrain.colors = [];
+				this.config.terrain.normal = [];
+			}
+			if (this.config.terrain.colors[x + y*this.config.w]) {
+				return;// this.config.terrain.colors[x + y*this.config.w];
+			}
+			var x_d = [0, 1, 1, 0, -1, -1];
+			var y_d = [-1, -1, 0, 1, 1, 0];
+			var p, f;
+			var accum = vec3.create();
+			var cross = vec3.create();
+			var cnt = 0;
+			for (var i = 0; i < 6; i++) {
+				if (x + x_d[i] >= 0 && x + x_d[i] < this.config.w && y + y_d[i] >= 0 && y + y_d[i] < this.config.h) {
+					var c = vec3.fromValues(-x_d[i]*this.config.h_scale, -y_d[i]*this.config.h_scale, this.get_height(x, y) - this.get_height(x + x_d[i], y + y_d[i]));
+					if (!p) {
+						p = c;
+						f = p;
+					} else {
+						vec3.cross(cross, p, c);
+						vec3.add(accum, accum, cross);
+						p = c;
+						cnt++;
+					}
+				} else {
+					p = null;
+					f = null;
+				}
+			}
+			if (f) {
+				vec3.cross(cross, c, f);
+				vec3.add(accum, accum, cross);
+			}
+			vec3.normalize(accum, accum);
+			var d = vec3.dot(accum, vec3.fromValues(0.9, 0.9, 0.9)) + 0.1;
+			this.config.terrain.normal[x + y*this.config.w] = accum;
+			this.config.terrain.colors[x + y*this.config.w] = [d, d, d];
 		},
 		get_height: function(x, y) {
 			var i = x + y*this.config.w;
@@ -290,14 +362,70 @@ require(["glMatrix"], function(gl_matrix) {
 			//mvTranslate([this.x, this.y, 0]);
 
 			gl.bindBuffer(gl.ARRAY_BUFFER, this.vertex_buffer);
-			gl.vertexAttribPointer(current_shader.vertex, 3, gl.FLOAT, false, 28, 0);
+			gl.vertexAttribPointer(current_shader.vertex, 3, gl.FLOAT, false, 36, 0);
 
 			gl.bindBuffer(gl.ARRAY_BUFFER, this.vertex_buffer);
-			gl.vertexAttribPointer(current_shader.color, 4, gl.FLOAT, false, 28, 12);//7*4, 3*4);
+			gl.vertexAttribPointer(current_shader.color, 4, gl.FLOAT, false, 36, 12);//7*4, 3*4);
+
+			gl.bindBuffer(gl.ARRAY_BUFFER, this.vertex_buffer);
+			gl.vertexAttribPointer(current_shader.texture, 2, gl.FLOAT, false, 36, 28);//7*4, 3*4);
+
 			setMatrixUniforms(current_shader);
 			gl.drawElements(gl.TRIANGLES, this.vertex_count, gl.UNSIGNED_SHORT, 0);//gl.drawArrays(gl.TRIANGLES, 0, 9);//this.vertex_count);
 		}
 	}
+
+	var getJSON = function(url, successHandler, errorHandler) {
+		var xhr = typeof XMLHttpRequest != 'undefined'
+		? new XMLHttpRequest()
+		: new ActiveXObject('Microsoft.XMLHTTP');
+		xhr.open('get', url, true);
+		xhr.responseType = 'json';
+		xhr.onreadystatechange = function() {
+			var status;
+			var data;
+			// http://xhr.spec.whatwg.org/#dom-xmlhttprequest-readystate
+			if (xhr.readyState == 4) { // `DONE`
+				status = xhr.status;
+				if (status == 200) {
+					successHandler && successHandler(xhr.response);
+				} else {
+					errorHandler && errorHandler(status);
+				}
+			}
+		};
+		xhr.send();
+	};
+
+	function texture(file) {
+		this.file = file;
+	}
+
+	texture.prototype = {
+		load: function(callback) {
+			var self = this;
+			getJSON("bin/" + this.file + ".json", function(response) {
+				self.data = response;
+				self.img = new Image();
+        		self.img.onload = function() {
+	        		callback();
+        		};
+        		self.img.src = "bin/" + self.data.file;
+			}, function (status) {
+				callback(status);
+			});
+		},
+		drawTile: function(context, tile, x, y, size) {
+			var sx = 0, sy = 0, sw = this.img.width, sh = this.img.height;
+			if (this.data.tiling.enabled) {
+				sx = (tile * this.data.tiling.x) % this.img.width;
+				sy = Math.floor(tile * this.data.tiling.x / this.img.width) * this.data.tiling.y;
+				sw = this.data.tiling.x;
+				sh = this.data.tiling.y;
+			}
+			context.drawImage(this.img, sx, sy, sw, sh, x, y, size, size);
+		}
+	};
 
 	function terrain(config, gl) {
 		this.config = config;
@@ -307,16 +435,74 @@ require(["glMatrix"], function(gl_matrix) {
 
 	terrain.prototype = {
 		init: function() {
-			for (var y = 0; y < this.config.h/chunk.size; y++) {
-				for (var x = 0; x < this.config.w/chunk.size; x++) {
-					this.chunks.push(new chunk(this.config, x*chunk.size, y*chunk.size, gl));
+			var images_loaded = 0;
+			for (var i = 0; i < this.config.terrain.textures.length; i++) {
+				this.config.terrain.textures[i] = new texture(this.config.terrain.textures[i]);
+				var self = this;
+				this.config.terrain.textures[i].load(function(err) {
+					if (err) {
+						console.log(err);
+					} else {
+						images_loaded++;
+						if (images_loaded == self.config.terrain.textures.length) {
+							self.generate_texture();
+						}
+					}
+				});
+			}
+			for (var y = 0; y < this.config.h / chunk.size; y++) {
+				for (var x = 0; x < this.config.w / chunk.size; x++) {
+					this.chunks.push(new chunk(this.config, x * chunk.size, y * chunk.size, gl));
 				}
 			}
 		},
 		draw: function() {
+			if (this.texture) {
+				gl.activeTexture(gl.TEXTURE0);
+    			gl.bindTexture(gl.TEXTURE_2D, this.texture);
+	    		gl.uniform1i(current_shader.samplerUniform, 0);
+    		}
 			for (var i = 0; i < this.chunks.length; i++) {
 				this.chunks[i].draw(this.current_shader);
 			}
+		},
+		generate_texture: function() {
+			var canvas = document.createElement('canvas');
+			canvas.width = this.config.terrain.t_width*this.config.terrain.ts;
+			canvas.height = this.config.terrain.t_height*this.config.terrain.ts;
+			var ctx = canvas.getContext('2d');
+			for (var i = 0; i < this.config.terrain.t_width*this.config.terrain.t_height; i++) {
+				if (i < this.config.terrain.t_count) {
+					for (var j = 0; j < this.config.terrain.textures_data[i].data.length; j++) {
+						this.config.terrain.textures[this.config.terrain.textures_data[i].data[j].num].drawTile(
+							ctx,
+							this.config.terrain.textures_data[i].data[j].coord,
+							(i % this.config.terrain.t_width) * this.config.terrain.ts,
+							Math.floor(i / this.config.terrain.t_width) * this.config.terrain.ts,
+							this.config.terrain.ts);
+					}
+				} else {
+					this.config.terrain.textures[this.config.terrain.textures_data[0].data[0].num/*this.config.terrain.textures_data[this.config.terrain.t_def].data[j].num*/].drawTile(
+						ctx,
+						this.config.terrain.textures_data[0].data[0].coord,
+						(i % this.config.terrain.t_width) * this.config.terrain.ts,
+						Math.floor(i / this.config.terrain.t_width) * this.config.terrain.ts,
+						this.config.terrain.ts);
+
+				}
+			}
+			this.texture = gl.createTexture();
+			gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+
+			gl.bindTexture(gl.TEXTURE_2D, this.texture);
+			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, canvas); // This is the important line!
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
+			gl.generateMipmap(gl.TEXTURE_2D);
+
+			gl.bindTexture(gl.TEXTURE_2D, null);
+
+			//document.body.appendChild(canvas);
 		}
 	}
 
@@ -373,21 +559,27 @@ require(["glMatrix"], function(gl_matrix) {
 	function shader(vertex_shader, fragment_shader) {
 		this.fragmentShader = getShader("\
 	varying lowp vec4 vColor;\
-	\
+	varying highp vec2 vTextureCoord;\
+\
+  	uniform sampler2D uSampler;	\
 	void main(void) {\
-	gl_FragColor = vColor;}", "fragment");
+	gl_FragColor = vColor*texture2D(uSampler, vec2(vTextureCoord.s, 1.0 - vTextureCoord.t));\
+	}", "fragment");
 		this.vertexShader = getShader("\
 	attribute vec3 aVertexPosition;\
 	attribute vec4 aVertexColor;\
+	attribute vec2 aTexture;\
 	\
 	uniform mat4 uMVMatrix;\
 	uniform mat4 uPMatrix;\
 	\
-		varying lowp vec4 vColor;\
+	varying lowp vec4 vColor;\
+	varying vec2 vTextureCoord;\
 	\
 	void main(void) {\
 	gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);\
-	vColor = aVertexColor*aVertexPosition.z/25.0;\
+	vColor = aVertexColor/*aVertexPosition.z/25.0*/;\
+	vTextureCoord = aTexture;\
 	      }", "vertex");
 
 		// Create the shader program
@@ -407,11 +599,14 @@ require(["glMatrix"], function(gl_matrix) {
 
 		this.vertex = gl.getAttribLocation(this.shaderProgram, "aVertexPosition");
 		gl.enableVertexAttribArray(this.vertex);
+		this.texture = gl.getAttribLocation(this.shaderProgram, "aTexture");
+		gl.enableVertexAttribArray(this.texture);
 
 		this.color = gl.getAttribLocation(this.shaderProgram, "aVertexColor");
 		gl.enableVertexAttribArray(this.color);
 		this.pUniform = gl.getUniformLocation(this.shaderProgram, "uPMatrix");
 		this.mvUniform = gl.getUniformLocation(this.shaderProgram, "uMVMatrix");
+		this.samplerUniform = gl.getUniformLocation(this.shaderProgram, "uSampler");
 
 
 	}
@@ -420,6 +615,7 @@ require(["glMatrix"], function(gl_matrix) {
 	var c = [256, 256, 0], u = [0, 0, 1];
 	function loadIdentity() {
 	  gl_matrix.mat4.lookAt(mvMatrix, [256 + 256*Math.cos(ti), 256 + 256*Math.sin(ti), 256], c, u);//makeLookAt(256 + 256*Math.cos(ti), 256 + 256*Math.sin(ti), 256, 256, 256, 0, 0, 0, 1);//Matrix.I(4);
+//	  gl_matrix.mat4.lookAt(mvMatrix, [70, 5, 32], [0,0,10], u);//makeLookAt(256 + 256*Math.cos(ti), 256 + 256*Math.sin(ti), 256, 256, 256, 0, 0, 0, 1);//Matrix.I(4);
 	}
 
 	/*function multMatrix(m) {
