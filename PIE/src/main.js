@@ -613,8 +613,9 @@ require(["glMatrix"], function(gl_matrix) {
 	var mvMatrix = gl_matrix.mat4.create(), perspectiveMatrix = gl_matrix.mat4.create();
 	var ti = 0;
 	var c = [256, 256, 0], u = [0, 0, 1];
+	var r = 146, h1 = 45, h2=40;
 	function loadIdentity() {
-	  gl_matrix.mat4.lookAt(mvMatrix, [256 + 256*Math.cos(ti), 256 + 256*Math.sin(ti), 256], c, u);//makeLookAt(256 + 256*Math.cos(ti), 256 + 256*Math.sin(ti), 256, 256, 256, 0, 0, 0, 1);//Matrix.I(4);
+	  gl_matrix.mat4.lookAt(mvMatrix, [256 + r*Math.cos(ti), 256 + r*Math.sin(ti), h1 + Math.sin(ti*2)*3], [256 + r*Math.cos(ti+0.3), 256 + r*Math.sin(ti+0.3), h2], u);//makeLookAt(256 + 256*Math.cos(ti), 256 + 256*Math.sin(ti), 256, 256, 256, 0, 0, 0, 1);//Matrix.I(4);
 //	  gl_matrix.mat4.lookAt(mvMatrix, [70, 5, 32], [0,0,10], u);//makeLookAt(256 + 256*Math.cos(ti), 256 + 256*Math.sin(ti), 256, 256, 256, 0, 0, 0, 1);//Matrix.I(4);
 	}
 
@@ -695,18 +696,38 @@ require(["glMatrix"], function(gl_matrix) {
 	}, false);
 
 
-	perspectiveMatrix = gl_matrix.mat4.perspective(perspectiveMatrix, 1.4, 640.0/640.0, 0.1, 1000.0);
-	
+	var devicePixelRatio = window.devicePixelRatio || 1;
+	var canvas = document.getElementById("glcanvas");
+    canvas.width = window.innerWidth*devicePixelRatio;
+    canvas.height = window.innerHeight*devicePixelRatio;
+	perspectiveMatrix = gl_matrix.mat4.perspective(perspectiveMatrix, 1.9, canvas.width/canvas.height, 0.1, 1000.0);//canvas.clientWidth/canvas.clientHeight
 	loadIdentity();
 	var oReq = new XMLHttpRequest();
 	oReq.open("GET", "bin/Data/Maps/GreenForest.pm", true);
 	oReq.responseType = "arraybuffer";
 
-	var gl = initGL(document.getElementById("glcanvas"));
+	var gl = initGL(canvas);
 	current_shader = new shader();
 	gl.useProgram(current_shader.shaderProgram);
 
 	var t;
+
+	function resizeCanvas() {
+	        canvas.width = window.innerWidth*devicePixelRatio;
+	        canvas.height = window.innerHeight*devicePixelRatio;
+//	        canvas.style.width = 
+			gl.viewport(0, 0, canvas.width, canvas.height);
+			perspectiveMatrix = gl_matrix.mat4.perspective(perspectiveMatrix, 1.9, canvas.width/canvas.height, 0.1, 1000.0);//canvas.clientWidth/canvas.clientHeight
+	        
+	        /**
+	         * Your drawings need to be inside this function otherwise they will be reset when 
+	         * you resize the browser window and the canvas goes will be cleared.
+	         */
+	        //drawStuff(); 
+	}
+
+	window.addEventListener('resize', resizeCanvas, false);
+
 
 	oReq.onload = function (oEvent) {
 	  var arrayBuffer = oReq.response; // Note: not oReq.responseText
