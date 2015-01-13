@@ -505,7 +505,6 @@ begin
       end;
       for j:=1 to mc do begin
         f.WriteWord(_add(indbycol(cols[j-1])));
-//word(indbycol(cols[j-1])));
         f.WriteWord(word(indbytile(indbycol(cols[j-1]),masks[j-1])));
       end;
     end;

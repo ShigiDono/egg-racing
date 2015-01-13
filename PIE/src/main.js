@@ -699,7 +699,7 @@ require(["glMatrix"], function(gl_matrix) {
 	
 	loadIdentity();
 	var oReq = new XMLHttpRequest();
-	oReq.open("GET", "bin/Data/Maps/greenforest.pm", true);
+	oReq.open("GET", "bin/Data/Maps/GreenForest.pm", true);
 	oReq.responseType = "arraybuffer";
 
 	var gl = initGL(document.getElementById("glcanvas"));
